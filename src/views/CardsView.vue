@@ -1,45 +1,44 @@
 <template>
-  <div class="games">
+  <div class="cards">
     <ui-modal
       v-model:show="isAddModal"
-      @submit="onGameAdd"
+      @submit="onCardAdd"
     >
       <div class="add-modal">
         <div class="add-modal__inputs">
-          <n-input placeholder="Title" v-model:value="gameModelForm.name"/>
-          <n-input placeholder="Image" v-model:value="gameModelForm.image"/>
+          <n-input placeholder="Title" v-model:value="cardModelForm.title"/>
+          <n-input placeholder="Image" v-model:value="cardModelForm.image"/>
           <n-input
             type="textarea"
             placeholder="Description"
             :resizable="false"
-            v-model:value="gameModelForm.description"
+            v-model:value="cardModelForm.description"
           />
         </div>
         <div class="add-modal__preview">
           <img
-            v-if="gameModelForm.image"
-            class="game-preview"
-            :src="gameModelForm.image"
+            v-if="cardModelForm.image"
+            class="card-preview"
+            :src="cardModelForm.image"
             alt="preview"
           />
-          <div class="game-preview game-preview--unsetted" v-else></div>
+          <div class="card-preview card-preview--unsetted" v-else></div>
         </div>
       </div>
     </ui-modal>
     <page-header
-      title="Games"
+      title="Cards"
       show-buttons
       @on-add="onAdd"
     />
     <page-content>
-      <div class="games__list">
+      <div class="cards__list">
         <card-el
-          v-for="game in games"
-          :id="game.id"
-          :key="game.id"
-          :name="game.name"
-          :img="game.image"
-          @cardClick="onGameClick"
+          v-for="card in cards"
+          :key="card.id"
+          :name="card.title"
+          :img="card.image"
+          :id="card.id"
         />
       </div>
     </page-content>
@@ -51,44 +50,46 @@ import PageHeader from '@/components/layout/PageHeader.vue';
 import PageContent from '@/components/layout/PageContent.vue';
 import CardEl from '@/components/CardEl.vue';
 import { computed, ref, onMounted } from 'vue';
-import { useRouter } from 'vue-router';
+import { useRoute } from 'vue-router';
 import { useStore } from 'vuex';
 import UiModal from '@/components/ui/uiModal.vue';
 
 const store = useStore();
-const router = useRouter();
+const route = useRoute();
 
 onMounted(() => {
-  store.dispatch('fetchGames');
+  store.dispatch('fetchCards', { gameId: route.params.gameId, collectionId: route.params.collectionId, deckId: route.params.deckId });
 });
 
-const games = computed(() => store.getters.getGames);
+const cards = computed(() => store.getters.getCards);
 const isAddModal = ref(false);
 const onAdd = () => {
   isAddModal.value = true;
 };
-const gameModelForm = ref({
-  name: '',
+const cardModelForm = ref({
+  title: '',
   image: '',
   description: '',
 });
 
-const onGameAdd = () => {
-  if (gameModelForm.value.name && gameModelForm.value.image) {
-    store.dispatch('fetchAddGame', gameModelForm.value).finally(() => {
-      gameModelForm.value = { name: '', image: '', description: '' };
-      isAddModal.value = false;
-    });
+const onCardAdd = () => {
+  if (cardModelForm.value.title && cardModelForm.value.image1) {
+    store.dispatch('fetchAddCard', {
+      gameId: route.params.gameId,
+      collectionId: route.params.collectionId,
+      deckId: route.params.deckId,
+      body: cardModelForm.value,
+    })
+      .finally(() => {
+        cardModelForm.value = { title: '', image: '', description: '' };
+        isAddModal.value = false;
+      });
   }
-};
-
-const onGameClick = (id) => {
-  router.push(`/game/${id}`);
 };
 </script>
 
 <style lang="scss">
-.games {
+.cards {
   height: 100%;
   display: flex;
   flex-direction: column;
@@ -116,7 +117,7 @@ const onGameClick = (id) => {
     align-items: center;
   }
 }
-.game-preview {
+.card-preview {
   max-width: 205px;
   aspect-ratio: 0.71;
   border: 2px #138b44 solid;

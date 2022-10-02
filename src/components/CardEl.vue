@@ -1,7 +1,13 @@
 <template>
   <div class="card">
-    <img @contextmenu="onRightClick" class="img" :src="props.img" :alt="props.title" />
-    <div class="label">{{ props.title }}</div>
+    <img
+      @contextmenu="onRightClick"
+      class="img"
+      :src="props.img"
+      :alt="props.title"
+      @click="onCardClick"
+    />
+    <div class="label">{{ props.name }}</div>
     <n-dropdown
       placement="bottom-start"
       trigger="manual"
@@ -16,16 +22,22 @@
 </template>
 
 <script setup>
-import { ref } from 'vue';
+import { ref, defineEmits } from 'vue';
+
+const emit = defineEmits(['cardClick']);
 
 const props = defineProps({
-  title: {
+  name: {
     type: String,
     default: '',
   },
   img: {
     type: String,
     default: '',
+  },
+  id: {
+    type: String,
+    required: true,
   },
 });
 
@@ -62,6 +74,10 @@ const onClickOutside = () => {
 const handleSelect = (key) => {
   showDropdownRef.value = false;
   console.log(key);
+};
+
+const onCardClick = () => {
+  emit('cardClick', props.id);
 };
 </script>
 

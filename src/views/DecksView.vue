@@ -1,45 +1,45 @@
 <template>
-  <div class="games">
+  <div class="decks">
     <ui-modal
       v-model:show="isAddModal"
-      @submit="onGameAdd"
+      @submit="onDeckAdd"
     >
       <div class="add-modal">
         <div class="add-modal__inputs">
-          <n-input placeholder="Title" v-model:value="gameModelForm.name"/>
-          <n-input placeholder="Image" v-model:value="gameModelForm.image"/>
+          <n-input placeholder="Title" v-model:value="deckModelForm.type"/>
+          <n-input placeholder="Image" v-model:value="deckModelForm.backside"/>
           <n-input
             type="textarea"
             placeholder="Description"
             :resizable="false"
-            v-model:value="gameModelForm.description"
+            v-model:value="deckModelForm.description"
           />
         </div>
         <div class="add-modal__preview">
           <img
-            v-if="gameModelForm.image"
-            class="game-preview"
-            :src="gameModelForm.image"
+            v-if="deckModelForm.backside"
+            class="deck-preview"
+            :src="deckModelForm.backside"
             alt="preview"
           />
-          <div class="game-preview game-preview--unsetted" v-else></div>
+          <div class="deck-preview deck-preview--unsetted" v-else></div>
         </div>
       </div>
     </ui-modal>
     <page-header
-      title="Games"
+      title="Decks"
       show-buttons
       @on-add="onAdd"
     />
     <page-content>
-      <div class="games__list">
+      <div class="decks__list">
         <card-el
-          v-for="game in games"
-          :id="game.id"
-          :key="game.id"
-          :name="game.name"
-          :img="game.image"
-          @cardClick="onGameClick"
+          v-for="deck in decks"
+          :key="deck.id"
+          :name="deck.type"
+          :img="deck.backside"
+          :id="deck.id"
+          @cardClick="onDeckClick"
         />
       </div>
     </page-content>
@@ -51,44 +51,46 @@ import PageHeader from '@/components/layout/PageHeader.vue';
 import PageContent from '@/components/layout/PageContent.vue';
 import CardEl from '@/components/CardEl.vue';
 import { computed, ref, onMounted } from 'vue';
-import { useRouter } from 'vue-router';
+import { useRoute, useRouter } from 'vue-router';
 import { useStore } from 'vuex';
 import UiModal from '@/components/ui/uiModal.vue';
 
 const store = useStore();
+const route = useRoute();
 const router = useRouter();
 
 onMounted(() => {
-  store.dispatch('fetchGames');
+  store.dispatch('fetchDecks', { gameId: route.params.gameId, collectionId: route.params.collectionId });
 });
 
-const games = computed(() => store.getters.getGames);
+const decks = computed(() => store.getters.getDecks);
 const isAddModal = ref(false);
 const onAdd = () => {
   isAddModal.value = true;
 };
-const gameModelForm = ref({
-  name: '',
-  image: '',
+const deckModelForm = ref({
+  type: '',
+  backside: '',
   description: '',
 });
 
-const onGameAdd = () => {
-  if (gameModelForm.value.name && gameModelForm.value.image) {
-    store.dispatch('fetchAddGame', gameModelForm.value).finally(() => {
-      gameModelForm.value = { name: '', image: '', description: '' };
-      isAddModal.value = false;
-    });
+const onDeckAdd = () => {
+  if (deckModelForm.value.type && deckModelForm.value.backside) {
+    store.dispatch('fetchAddDeck', { gameId: route.params.gameId, collectionId: route.params.collectionId, body: deckModelForm.value })
+      .finally(() => {
+        deckModelForm.value = { type: '', backside: '', description: '' };
+        isAddModal.value = false;
+      });
   }
 };
 
-const onGameClick = (id) => {
-  router.push(`/game/${id}`);
+const onDeckClick = (id) => {
+  router.push(`/game/${route.params.gameId}/collection/${route.params.collectionId}/deck/${id}`);
 };
 </script>
 
 <style lang="scss">
-.games {
+.decks {
   height: 100%;
   display: flex;
   flex-direction: column;
@@ -116,7 +118,7 @@ const onGameClick = (id) => {
     align-items: center;
   }
 }
-.game-preview {
+.deck-preview {
   max-width: 205px;
   aspect-ratio: 0.71;
   border: 2px #138b44 solid;

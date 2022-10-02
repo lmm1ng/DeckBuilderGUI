@@ -1,45 +1,45 @@
 <template>
-  <div class="games">
+  <div class="collections">
     <ui-modal
       v-model:show="isAddModal"
-      @submit="onGameAdd"
+      @submit="onCollectionAdd"
     >
       <div class="add-modal">
         <div class="add-modal__inputs">
-          <n-input placeholder="Title" v-model:value="gameModelForm.name"/>
-          <n-input placeholder="Image" v-model:value="gameModelForm.image"/>
+          <n-input placeholder="Title" v-model:value="collectionModelForm.name"/>
+          <n-input placeholder="Image" v-model:value="collectionModelForm.image"/>
           <n-input
             type="textarea"
             placeholder="Description"
             :resizable="false"
-            v-model:value="gameModelForm.description"
+            v-model:value="collectionModelForm.description"
           />
         </div>
         <div class="add-modal__preview">
           <img
-            v-if="gameModelForm.image"
-            class="game-preview"
-            :src="gameModelForm.image"
+            v-if="collectionModelForm.image"
+            class="collection-preview"
+            :src="collectionModelForm.image"
             alt="preview"
           />
-          <div class="game-preview game-preview--unsetted" v-else></div>
+          <div class="collection-preview collection-preview--unsetted" v-else></div>
         </div>
       </div>
     </ui-modal>
     <page-header
-      title="Games"
+      title="Collections"
       show-buttons
       @on-add="onAdd"
     />
     <page-content>
-      <div class="games__list">
+      <div class="collections__list">
         <card-el
-          v-for="game in games"
-          :id="game.id"
-          :key="game.id"
-          :name="game.name"
-          :img="game.image"
-          @cardClick="onGameClick"
+          v-for="collection in collections"
+          :key="collection.id"
+          :name="collection.name"
+          :img="collection.image"
+          :id="collection.id"
+          @cardClick="onCollectionClick"
         />
       </div>
     </page-content>
@@ -51,44 +51,46 @@ import PageHeader from '@/components/layout/PageHeader.vue';
 import PageContent from '@/components/layout/PageContent.vue';
 import CardEl from '@/components/CardEl.vue';
 import { computed, ref, onMounted } from 'vue';
-import { useRouter } from 'vue-router';
+import { useRouter, useRoute } from 'vue-router';
 import { useStore } from 'vuex';
 import UiModal from '@/components/ui/uiModal.vue';
 
 const store = useStore();
+const route = useRoute();
 const router = useRouter();
 
 onMounted(() => {
-  store.dispatch('fetchGames');
+  store.dispatch('fetchCollections', { gameId: route.params.gameId });
 });
 
-const games = computed(() => store.getters.getGames);
+const collections = computed(() => store.getters.getCollections);
 const isAddModal = ref(false);
 const onAdd = () => {
   isAddModal.value = true;
 };
-const gameModelForm = ref({
+const collectionModelForm = ref({
   name: '',
   image: '',
   description: '',
 });
 
-const onGameAdd = () => {
-  if (gameModelForm.value.name && gameModelForm.value.image) {
-    store.dispatch('fetchAddGame', gameModelForm.value).finally(() => {
-      gameModelForm.value = { name: '', image: '', description: '' };
-      isAddModal.value = false;
-    });
+const onCollectionAdd = () => {
+  if (collectionModelForm.value.name && collectionModelForm.value.image) {
+    store.dispatch('fetchAddCollection', { gameId: route.params.gameId, body: collectionModelForm.value })
+      .finally(() => {
+        collectionModelForm.value = { name: '', image: '', description: '' };
+        isAddModal.value = false;
+      });
   }
 };
 
-const onGameClick = (id) => {
-  router.push(`/game/${id}`);
+const onCollectionClick = (id) => {
+  router.push(`/game/${route.params.gameId}/collection/${id}`);
 };
 </script>
 
 <style lang="scss">
-.games {
+.collections {
   height: 100%;
   display: flex;
   flex-direction: column;
@@ -116,7 +118,7 @@ const onGameClick = (id) => {
     align-items: center;
   }
 }
-.game-preview {
+.collection-preview {
   max-width: 205px;
   aspect-ratio: 0.71;
   border: 2px #138b44 solid;
