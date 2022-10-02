@@ -1,6 +1,6 @@
 <template>
   <div class="card">
-    <n-tooltip trigger="hover" placement="bottom" delay="1000">
+    <n-tooltip trigger="hover" placement="bottom" :delay="1000">
       <template #trigger>
         <img
           @contextmenu="onRightClick"

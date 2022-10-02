@@ -96,6 +96,12 @@ const editCardId = ref('_');
 watch(isAddModal, (val) => {
   if (!val) {
     editCardId.value = '_';
+    cardModelForm.value = {
+      title: '',
+      image: '',
+      description: '',
+      variables: [],
+    };
   }
 });
 

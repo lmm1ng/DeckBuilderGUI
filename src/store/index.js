@@ -24,7 +24,6 @@ export default createStore({
       commit('setPathItems', prepPath);
       const onlyIds = prepPath.filter((el, idx) => idx % 2 !== 0);
       const labeledPath = await Promise.all(onlyIds.map((pathEl, idx, arr) => {
-        console.log(idx);
         switch (idx) {
           case 0:
             return api.games.getGame({ gameId: arr[0] })

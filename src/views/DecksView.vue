@@ -2,7 +2,8 @@
   <div class="decks">
     <ui-modal
       v-model:show="isAddModal"
-      @submit="onDeckAdd"
+      :title="computedModalTitle"
+      @submit="onDeckSubmit"
     >
       <div class="add-modal">
         <div class="add-modal__inputs">
@@ -41,6 +42,8 @@
           :description="deck.description"
           :id="deck.id"
           @cardClick="onDeckClick"
+          @on-edit="onDeckEdit"
+          @on-delete="onDeckDelete"
         />
       </div>
     </page-content>
@@ -55,7 +58,7 @@ import {
   computed,
   ref,
   onMounted,
-  onBeforeUnmount,
+  onBeforeUnmount, watch,
 } from 'vue';
 import { useRoute, useRouter } from 'vue-router';
 import { useStore } from 'vuex';
@@ -84,14 +87,55 @@ const deckModelForm = ref({
   description: '',
 });
 
-const onDeckAdd = () => {
+const editDeckId = ref('_');
+
+watch(isAddModal, (val) => {
+  if (!val) {
+    editDeckId.value = '_';
+    deckModelForm.value = { type: '', backside: '', description: '' };
+  }
+});
+
+const computedModalTitle = computed(() => (editDeckId.value === '_' ? 'Create deck' : 'Edit deck'));
+
+const onDeckSubmit = () => {
+  const action = editDeckId.value !== '_' ? 'fetchEditDeck' : 'fetchAddDeck';
   if (deckModelForm.value.type && deckModelForm.value.backside) {
-    store.dispatch('fetchAddDeck', { gameId: route.params.gameId, collectionId: route.params.collectionId, body: deckModelForm.value })
+    store.dispatch(action, {
+      gameId: route.params.gameId,
+      collectionId: route.params.collectionId,
+      deckId: editDeckId.value,
+      body: { ...deckModelForm.value },
+    })
       .finally(() => {
         deckModelForm.value = { type: '', backside: '', description: '' };
         isAddModal.value = false;
       });
   }
+};
+
+const onDeckEdit = (id) => {
+  store.dispatch('fetchDeck', {
+    gameId: route.params.gameId,
+    collectionId: route.params.collectionId,
+    deckId: id,
+  }).then((response) => {
+    deckModelForm.value = {
+      type: response.type,
+      backside: response.backside,
+      description: response.description,
+    };
+    isAddModal.value = true;
+    editDeckId.value = id;
+  });
+};
+
+const onDeckDelete = (id) => {
+  store.dispatch('fetchDeleteDeck', {
+    gameId: route.params.gameId,
+    collectionId: route.params.collectionId,
+    deckId: id,
+  });
 };
 
 const onDeckClick = (id) => {

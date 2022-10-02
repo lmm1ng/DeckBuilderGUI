@@ -9,6 +9,13 @@ export default {
     return fetch('/api/games', { method: 'POST', body: JSON.stringify(requestData) })
       .then((response) => response.json());
   },
+  editGame(requestData) {
+    return fetch(`/api/games/${requestData.gameId}`, { method: 'PATCH', body: JSON.stringify(requestData.body) })
+      .then((response) => response.json());
+  },
+  deleteGame(requestData) {
+    return fetch(`/api/games/${requestData.gameId}`, { method: 'DELETE' });
+  },
   exportGame(requestData) {
     return fetch(`/api/games/${requestData.gameId}/export`);
   },
