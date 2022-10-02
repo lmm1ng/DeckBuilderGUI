@@ -42,7 +42,7 @@
           :key="card.id"
           :name="card.title"
           :img="card.image"
-          :id="card.id"
+          :id="String(card.id)"
           @on-edit="onCardEdit"
           @on-delete="onCardDelete"
         />
