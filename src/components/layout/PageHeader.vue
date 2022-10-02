@@ -1,6 +1,22 @@
 <template>
   <div class="page-header">
-    <span class="page-header__path"> {{ props.title }} </span>
+    <span class="page-header__path">
+
+      <n-breadcrumb class="breadcrumb-path">
+        <n-breadcrumb-item
+          @click="onBreadcrumbItemClick(0)"
+        >
+          Deck Builder
+        </n-breadcrumb-item>
+        <n-breadcrumb-item
+          v-for="(path, idx) in store.getters.getBreadcrumbPathItems"
+          :key="idx + 1"
+          @click="onBreadcrumbItemClick(idx + 1)"
+        >
+          {{ path }}
+        </n-breadcrumb-item>
+      </n-breadcrumb>
+    </span>
     <div class="page-header__buttons" v-if="props.showButtons">
       <Icon class="icon" size="24" @click="emit('on-add')">
         <AddFilled />
@@ -19,6 +35,11 @@
 import { AddFilled, NoteAddOutlined, SearchOutlined } from '@vicons/material';
 import { Icon } from '@vicons/utils';
 import { defineProps } from 'vue';
+import { useRouter } from 'vue-router';
+import { useStore } from 'vuex';
+
+const store = useStore();
+const router = useRouter();
 
 const props = defineProps({
   title: {
@@ -34,6 +55,10 @@ const props = defineProps({
     default: false,
   },
 });
+
+const onBreadcrumbItemClick = (idx) => {
+  router.push(`/${store.getters.getFullPathItems.slice(0, idx * 2).join('/')}`);
+};
 
 const emit = defineEmits(['on-add', 'on-import']);
 </script>
@@ -65,5 +90,14 @@ const emit = defineEmits(['on-add', 'on-import']);
 }
 .icon:hover {
   color: #968c7b;
+}
+
+.breadcrumb-path {
+  .n-breadcrumb-item:last-child .n-breadcrumb-item__link {
+    font-weight: bold;
+  }
+  .n-breadcrumb-item__link, .n-breadcrumb-item__separator {
+    color: #e3ded6!important;
+  }
 }
 </style>

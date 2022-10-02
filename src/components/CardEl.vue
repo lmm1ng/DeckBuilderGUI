@@ -101,7 +101,6 @@ const onCardClick = () => {
 <style lang="scss">
 .img {
   max-width: 205px;
-  aspect-ratio: 0.71;
   border: 2px #138b44 solid;
   border-radius: 8px;
   user-select: none;

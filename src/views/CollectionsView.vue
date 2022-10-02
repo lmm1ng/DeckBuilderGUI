@@ -32,7 +32,7 @@
       @on-add="onAdd"
     />
     <page-content>
-      <div class="collections__list">
+      <div v-if="collections.length" class="collections__list">
         <card-el
           v-for="collection in collections"
           :key="collection.id"
@@ -42,6 +42,7 @@
           @cardClick="onCollectionClick"
         />
       </div>
+      <span v-else>Нет коллекций</span>
     </page-content>
   </div>
 </template>
