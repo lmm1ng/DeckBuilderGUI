@@ -2,7 +2,7 @@
   <div class="cards">
     <ui-modal
       v-model:show="isAddModal"
-      @submit="onCardAdd"
+      @submit="onCardSubmit"
     >
       <div class="add-modal">
         <div class="add-modal__inputs">
@@ -13,6 +13,10 @@
             placeholder="Description"
             :resizable="false"
             v-model:value="cardModelForm.description"
+          />
+          <n-dynamic-input
+            v-model:value="cardModelForm.variables"
+            preset="pair"
           />
         </div>
         <div class="add-modal__preview">
@@ -39,6 +43,8 @@
           :name="card.title"
           :img="card.image"
           :id="card.id"
+          @on-edit="onCardEdit"
+          @on-delete="onCardDelete"
         />
       </div>
     </page-content>
@@ -70,21 +76,71 @@ const cardModelForm = ref({
   title: '',
   image: '',
   description: '',
+  variables: [],
 });
 
-const onCardAdd = () => {
-  if (cardModelForm.value.title && cardModelForm.value.image1) {
-    store.dispatch('fetchAddCard', {
+const editCardId = ref('_');
+
+const onCardSubmit = () => {
+  const action = editCardId.value !== '_' ? 'fetchEditCard' : 'fetchAddCard';
+  if (cardModelForm.value.title && cardModelForm.value.image) {
+    const variables = cardModelForm.value.variables.reduce((acc, cur) => {
+      acc[cur.key] = cur.value;
+      return acc;
+    }, {});
+    store.dispatch(action, {
       gameId: route.params.gameId,
       collectionId: route.params.collectionId,
       deckId: route.params.deckId,
-      body: cardModelForm.value,
+      cardId: editCardId.value,
+      body: {
+        ...cardModelForm.value,
+        variables,
+      },
     })
       .finally(() => {
-        cardModelForm.value = { title: '', image: '', description: '' };
+        cardModelForm.value = {
+          title: '',
+          image: '',
+          description: '',
+          variables: [],
+        };
         isAddModal.value = false;
+        editCardId.value = '_';
       });
   }
+};
+const onCardEdit = (id) => {
+  store.dispatch('fetchCard', {
+    gameId: route.params.gameId,
+    collectionId: route.params.collectionId,
+    deckId: route.params.deckId,
+    cardId: id,
+  }).then((response) => {
+    const {
+      title,
+      image,
+      description,
+      variables,
+    } = response;
+    cardModelForm.value = {
+      title,
+      image,
+      description,
+      variables: Object.entries(variables).map(([key, value]) => ({ key, value })),
+    };
+    isAddModal.value = true;
+    editCardId.value = id;
+  });
+};
+
+const onCardDelete = (id) => {
+  store.dispatch('fetchDeleteCard', {
+    gameId: route.params.gameId,
+    collectionId: route.params.collectionId,
+    deckId: route.params.deckId,
+    cardId: id,
+  });
 };
 </script>
 

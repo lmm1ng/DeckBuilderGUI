@@ -60,8 +60,8 @@ const emit = defineEmits(['update:show', 'submit']);
     padding: 15px;
   }
   &__wrapper {
-    width: 50vw;
-    height: 50vh;
+    width: 90vw;
+    height: 80vh;
     background-color: #e3ded6;
     display: flex;
     flex-direction: column;

@@ -22,9 +22,9 @@
 </template>
 
 <script setup>
-import { ref, defineEmits } from 'vue';
+import { ref, defineEmits, computed } from 'vue';
 
-const emit = defineEmits(['cardClick']);
+const emit = defineEmits(['cardClick', 'on-edit', 'on-delete']);
 
 const props = defineProps({
   name: {
@@ -39,6 +39,10 @@ const props = defineProps({
     type: String,
     required: true,
   },
+  withExport: {
+    type: Boolean,
+    default: false,
+  },
 });
 
 // context menu
@@ -46,20 +50,25 @@ const showDropdownRef = ref(false);
 const xRef = ref(0);
 const yRef = ref(0);
 
-const options = [
-  {
-    label: 'Change',
-    key: 'change',
-  },
-  {
-    label: 'Export',
-    key: 'Export',
-  },
-  {
-    label: 'Delete',
-    key: 'delete',
-  },
-];
+const options = computed(() => {
+  const optionsArr = [
+    {
+      label: 'Change',
+      key: 'change',
+    },
+    {
+      label: 'Delete',
+      key: 'delete',
+    },
+  ];
+  if (props.withExport) {
+    optionsArr.splice(1, 0, {
+      label: 'Export',
+      key: 'Export',
+    });
+  }
+  return optionsArr;
+});
 
 const onRightClick = (e) => {
   e.preventDefault();
@@ -72,8 +81,13 @@ const onClickOutside = () => {
 };
 
 const handleSelect = (key) => {
+  if (key === 'change') {
+    emit('on-edit', props.id);
+  }
+  if (key === 'delete') {
+    emit('on-delete', props.id);
+  }
   showDropdownRef.value = false;
-  console.log(key);
 };
 
 const onCardClick = () => {
