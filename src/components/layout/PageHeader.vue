@@ -5,7 +5,7 @@
       <Icon class="icon" size="24" @click="emit('on-add')">
         <AddFilled />
       </Icon>
-      <Icon class="icon" size="24">
+      <Icon class="icon" size="24" v-if="props.withImport" @click="emit('on-import')">
         <NoteAddOutlined />
       </Icon>
       <Icon class="icon" size="24">
@@ -29,9 +29,13 @@ const props = defineProps({
     type: Boolean,
     default: false,
   },
+  withImport: {
+    type: Boolean,
+    default: false,
+  },
 });
 
-const emit = defineEmits(['on-add']);
+const emit = defineEmits(['on-add', 'on-import']);
 </script>
 
 <style lang="scss">

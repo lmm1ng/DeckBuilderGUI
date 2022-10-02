@@ -24,7 +24,7 @@
 <script setup>
 import { ref, defineEmits, computed } from 'vue';
 
-const emit = defineEmits(['cardClick', 'on-edit', 'on-delete']);
+const emit = defineEmits(['cardClick', 'on-edit', 'on-delete', 'on-export']);
 
 const props = defineProps({
   name: {
@@ -64,7 +64,7 @@ const options = computed(() => {
   if (props.withExport) {
     optionsArr.splice(1, 0, {
       label: 'Export',
-      key: 'Export',
+      key: 'export',
     });
   }
   return optionsArr;
@@ -86,6 +86,9 @@ const handleSelect = (key) => {
   }
   if (key === 'delete') {
     emit('on-delete', props.id);
+  }
+  if (key === 'export') {
+    emit('on-export', props.id);
   }
   showDropdownRef.value = false;
 };

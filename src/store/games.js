@@ -24,5 +24,20 @@ export default {
     fetchAddGame({ commit }, game) {
       return api.games.createGame(game).then((response) => commit('setAddGame', response.data));
     },
+    // eslint-disable-next-line no-unused-vars
+    fetchExportGame({ commit }, requestData) {
+      return api.games.exportGame(requestData).then((response) => {
+        response.blob().then((data) => {
+          const a = document.createElement('a');
+          a.href = URL.createObjectURL(data);
+          a.download = `${requestData.gameId}.zip`;
+          a.click();
+        });
+      });
+    },
+    // eslint-disable-next-line no-unused-vars
+    fetchImportGame({ commit }, requestData) {
+      return api.games.importGame(requestData);
+    },
   },
 };

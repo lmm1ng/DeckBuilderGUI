@@ -1,6 +1,34 @@
 <template>
   <div class="games">
     <ui-modal
+      v-model:show="isImportModal"
+      @submit="onGameImport"
+    >
+      <div class="import-modal">
+        <n-input placeholder="Title" v-model:value="gameImportModelForm.name" />
+        <n-upload
+          ref="uploader"
+          :on-change="onImportFile"
+          :max="1"
+        >
+          <n-upload-dragger style="background: #E3DED6;">
+            <div style="margin-bottom: 12px">
+              <n-icon size="48" :depth="3">
+                <archive-outlined />
+              </n-icon>
+            </div>
+            <n-text style="font-size: 16px">
+              Click or drag a file to this area to upload
+            </n-text>
+            <n-p depth="3" style="margin: 8px 0 0 0">
+              Strictly prohibit from uploading sensitive information. For example,
+              your bank card PIN or your credit card expiry date.
+            </n-p>
+          </n-upload-dragger>
+        </n-upload>
+      </div>
+    </ui-modal>
+    <ui-modal
       v-model:show="isAddModal"
       @submit="onGameAdd"
     >
@@ -30,6 +58,8 @@
       title="Games"
       show-buttons
       @on-add="onAdd"
+      @on-import="onImport"
+      with-import
     />
     <page-content>
       <div class="games__list">
@@ -40,6 +70,8 @@
           :name="game.name"
           :img="game.image"
           @cardClick="onGameClick"
+          with-export
+          @on-export="onGameExport"
         />
       </div>
     </page-content>
@@ -50,10 +82,17 @@
 import PageHeader from '@/components/layout/PageHeader.vue';
 import PageContent from '@/components/layout/PageContent.vue';
 import CardEl from '@/components/CardEl.vue';
-import { computed, ref, onMounted } from 'vue';
+import {
+  computed,
+  ref,
+  onMounted,
+  onBeforeUnmount,
+} from 'vue';
 import { useRouter } from 'vue-router';
 import { useStore } from 'vuex';
 import UiModal from '@/components/ui/uiModal.vue';
+
+import { ArchiveOutlined } from '@vicons/material';
 
 const store = useStore();
 const router = useRouter();
@@ -62,11 +101,16 @@ onMounted(() => {
   store.dispatch('fetchGames');
 });
 
+onBeforeUnmount(() => {
+  store.commit('setGames', []);
+});
+
 const games = computed(() => store.getters.getGames);
 const isAddModal = ref(false);
 const onAdd = () => {
   isAddModal.value = true;
 };
+
 const gameModelForm = ref({
   name: '',
   image: '',
@@ -85,6 +129,43 @@ const onGameAdd = () => {
 const onGameClick = (id) => {
   router.push(`/game/${id}`);
 };
+
+const onGameExport = (id) => {
+  store.dispatch('fetchExportGame', { gameId: id });
+};
+
+const gameImportModelForm = ref({
+  name: '',
+  file: null,
+});
+
+const isImportModal = ref(false);
+const onImport = () => {
+  isImportModal.value = true;
+};
+
+const uploader = ref('null');
+
+const onGameImport = () => {
+  if (gameImportModelForm.value.file) {
+    const formData = new FormData();
+    formData.append('name', gameImportModelForm.value.name);
+    formData.append('file', gameImportModelForm.value.file);
+    store.dispatch('fetchImportGame', formData).then(() => store.dispatch('fetchGames'))
+      .finally(() => {
+        gameImportModelForm.value = {
+          name: '',
+          file: null,
+        };
+        isImportModal.value = false;
+        uploader.value.clear();
+      });
+  }
+};
+const onImportFile = ({ file }) => {
+  gameImportModelForm.value.file = file.file;
+};
+
 </script>
 
 <style lang="scss">
@@ -126,5 +207,14 @@ const onGameClick = (id) => {
     width: 205px;
     background-color: #138b44;
   }
+}
+
+.import-modal {
+  padding: 0 10%;
+  height: 100%;
+  display: flex;
+  justify-content: center;
+  flex-direction: column;
+  gap: 30px;
 }
 </style>

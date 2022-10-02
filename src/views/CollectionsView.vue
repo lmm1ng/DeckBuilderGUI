@@ -50,7 +50,12 @@
 import PageHeader from '@/components/layout/PageHeader.vue';
 import PageContent from '@/components/layout/PageContent.vue';
 import CardEl from '@/components/CardEl.vue';
-import { computed, ref, onMounted } from 'vue';
+import {
+  computed,
+  ref,
+  onMounted,
+  onBeforeUnmount,
+} from 'vue';
 import { useRouter, useRoute } from 'vue-router';
 import { useStore } from 'vuex';
 import UiModal from '@/components/ui/uiModal.vue';
@@ -61,6 +66,10 @@ const router = useRouter();
 
 onMounted(() => {
   store.dispatch('fetchCollections', { gameId: route.params.gameId });
+});
+
+onBeforeUnmount(() => {
+  store.commit('setCollections', []);
 });
 
 const collections = computed(() => store.getters.getCollections);
