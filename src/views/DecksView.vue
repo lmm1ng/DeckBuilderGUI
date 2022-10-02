@@ -38,6 +38,7 @@
           :key="deck.id"
           :name="deck.type"
           :img="deck.backside"
+          :description="deck.description"
           :id="deck.id"
           @cardClick="onDeckClick"
         />

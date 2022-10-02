@@ -2,7 +2,7 @@
   <div :class="['modal', { 'modal--active': props.show }]">
     <div class="modal__wrapper">
       <div class="modal__header">
-        11
+        {{ title }}
       </div>
       <div class="modal__content">
         <slot/>
@@ -20,6 +20,10 @@ const props = defineProps({
   show: {
     type: Boolean,
     default: false,
+  },
+  title: {
+    type: String,
+    default: '',
   },
 });
 

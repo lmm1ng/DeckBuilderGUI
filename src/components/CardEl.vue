@@ -1,12 +1,17 @@
 <template>
   <div class="card">
-    <img
-      @contextmenu="onRightClick"
-      class="img"
-      :src="props.img"
-      :alt="props.title"
-      @click="onCardClick"
-    />
+    <n-tooltip trigger="hover" placement="bottom" delay="1000">
+      <template #trigger>
+        <img
+          @contextmenu="onRightClick"
+          class="img"
+          :src="props.img"
+          :alt="props.title"
+          @click="onCardClick"
+        />
+      </template>
+      <span>{{ props.description }}</span>
+    </n-tooltip>
     <div class="label">{{ props.name }}</div>
     <n-dropdown
       placement="bottom-start"
@@ -28,6 +33,10 @@ const emit = defineEmits(['cardClick', 'on-edit', 'on-delete', 'on-export']);
 
 const props = defineProps({
   name: {
+    type: String,
+    default: '',
+  },
+  description: {
     type: String,
     default: '',
   },

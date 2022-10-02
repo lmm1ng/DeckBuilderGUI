@@ -2,6 +2,7 @@
   <div class="cards">
     <ui-modal
       v-model:show="isAddModal"
+      :title="computedModalTitle"
       @submit="onCardSubmit"
     >
       <div class="add-modal">
@@ -42,6 +43,7 @@
           :key="card.id"
           :name="card.title"
           :img="card.image"
+          :description="card.description"
           :id="String(card.id)"
           @on-edit="onCardEdit"
           @on-delete="onCardDelete"
@@ -60,6 +62,7 @@ import {
   ref,
   onMounted,
   onBeforeUnmount,
+  watch,
 } from 'vue';
 import { useRoute } from 'vue-router';
 import { useStore } from 'vuex';
@@ -90,6 +93,14 @@ const cardModelForm = ref({
 
 const editCardId = ref('_');
 
+watch(isAddModal, (val) => {
+  if (!val) {
+    editCardId.value = '_';
+  }
+});
+
+const computedModalTitle = computed(() => (editCardId.value === '_' ? 'Create card' : 'Edit card'));
+
 const onCardSubmit = () => {
   const action = editCardId.value !== '_' ? 'fetchEditCard' : 'fetchAddCard';
   if (cardModelForm.value.title && cardModelForm.value.image) {
@@ -115,7 +126,6 @@ const onCardSubmit = () => {
           variables: [],
         };
         isAddModal.value = false;
-        editCardId.value = '_';
       });
   }
 };

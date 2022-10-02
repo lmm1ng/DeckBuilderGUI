@@ -69,6 +69,7 @@
           :key="game.id"
           :name="game.name"
           :img="game.image"
+          :description="game.description"
           @cardClick="onGameClick"
           with-export
           @on-export="onGameExport"

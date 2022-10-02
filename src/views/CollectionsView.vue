@@ -38,6 +38,7 @@
           :key="collection.id"
           :name="collection.name"
           :img="collection.image"
+          :description="collection.description"
           :id="collection.id"
           @cardClick="onCollectionClick"
         />
