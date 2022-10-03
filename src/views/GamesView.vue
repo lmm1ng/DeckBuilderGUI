@@ -68,7 +68,7 @@
           :id="game.id"
           :key="game.id"
           :name="game.name"
-          :img="game.image"
+          :img="game.cachedImage"
           :description="game.description"
           @cardClick="onGameClick"
           with-export

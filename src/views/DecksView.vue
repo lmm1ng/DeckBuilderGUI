@@ -7,8 +7,8 @@
     >
       <div class="add-modal">
         <div class="add-modal__inputs">
-          <n-input placeholder="Title" v-model:value="deckModelForm.type"/>
-          <n-input placeholder="Image" v-model:value="deckModelForm.backside"/>
+          <n-input placeholder="Title" v-model:value="deckModelForm.name"/>
+          <n-input placeholder="Image" v-model:value="deckModelForm.image"/>
           <n-input
             type="textarea"
             placeholder="Description"
@@ -18,9 +18,9 @@
         </div>
         <div class="add-modal__preview">
           <img
-            v-if="deckModelForm.backside"
+            v-if="deckModelForm.image"
             class="deck-preview"
-            :src="deckModelForm.backside"
+            :src="deckModelForm.image"
             alt="preview"
           />
           <div class="deck-preview deck-preview--unsetted" v-else></div>
@@ -37,8 +37,8 @@
         <card-el
           v-for="deck in decks"
           :key="deck.id"
-          :name="deck.type"
-          :img="deck.backside"
+          :name="deck.name"
+          :img="deck.cachedImage"
           :description="deck.description"
           :id="deck.id"
           @cardClick="onDeckClick"
@@ -82,8 +82,8 @@ const onAdd = () => {
   isAddModal.value = true;
 };
 const deckModelForm = ref({
-  type: '',
-  backside: '',
+  name: '',
+  image: '',
   description: '',
 });
 
@@ -92,7 +92,7 @@ const editDeckId = ref('_');
 watch(isAddModal, (val) => {
   if (!val) {
     editDeckId.value = '_';
-    deckModelForm.value = { type: '', backside: '', description: '' };
+    deckModelForm.value = { name: '', image: '', description: '' };
   }
 });
 
@@ -100,7 +100,7 @@ const computedModalTitle = computed(() => (editDeckId.value === '_' ? 'Create de
 
 const onDeckSubmit = () => {
   const action = editDeckId.value !== '_' ? 'fetchEditDeck' : 'fetchAddDeck';
-  if (deckModelForm.value.type && deckModelForm.value.backside) {
+  if (deckModelForm.value.name && deckModelForm.value.image) {
     store.dispatch(action, {
       gameId: route.params.gameId,
       collectionId: route.params.collectionId,
@@ -108,7 +108,7 @@ const onDeckSubmit = () => {
       body: { ...deckModelForm.value },
     })
       .finally(() => {
-        deckModelForm.value = { type: '', backside: '', description: '' };
+        deckModelForm.value = { name: '', image: '', description: '' };
         isAddModal.value = false;
       });
   }
@@ -121,8 +121,8 @@ const onDeckEdit = (id) => {
     deckId: id,
   }).then((response) => {
     deckModelForm.value = {
-      type: response.type,
-      backside: response.backside,
+      name: response.name,
+      image: response.image,
       description: response.description,
     };
     isAddModal.value = true;

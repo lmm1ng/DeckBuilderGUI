@@ -37,7 +37,7 @@
           v-for="collection in collections"
           :key="collection.id"
           :name="collection.name"
-          :img="collection.image"
+          :img="collection.cachedImage"
           :description="collection.description"
           :id="collection.id"
           @cardClick="onCollectionClick"

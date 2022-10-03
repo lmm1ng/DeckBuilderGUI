@@ -7,7 +7,7 @@
     >
       <div class="add-modal">
         <div class="add-modal__inputs">
-          <n-input placeholder="Title" v-model:value="cardModelForm.title"/>
+          <n-input placeholder="Title" v-model:value="cardModelForm.name"/>
           <n-input placeholder="Image" v-model:value="cardModelForm.image"/>
           <n-input
             type="textarea"
@@ -41,8 +41,8 @@
         <card-el
           v-for="card in cards"
           :key="card.id"
-          :name="card.title"
-          :img="card.image"
+          :name="card.name"
+          :img="card.cachedImage"
           :description="card.description"
           :id="String(card.id)"
           @on-edit="onCardEdit"
@@ -85,7 +85,7 @@ const onAdd = () => {
   isAddModal.value = true;
 };
 const cardModelForm = ref({
-  title: '',
+  name: '',
   image: '',
   description: '',
   variables: [],
@@ -97,7 +97,7 @@ watch(isAddModal, (val) => {
   if (!val) {
     editCardId.value = '_';
     cardModelForm.value = {
-      title: '',
+      name: '',
       image: '',
       description: '',
       variables: [],
@@ -109,7 +109,7 @@ const computedModalTitle = computed(() => (editCardId.value === '_' ? 'Create ca
 
 const onCardSubmit = () => {
   const action = editCardId.value !== '_' ? 'fetchEditCard' : 'fetchAddCard';
-  if (cardModelForm.value.title && cardModelForm.value.image) {
+  if (cardModelForm.value.name && cardModelForm.value.image) {
     const variables = cardModelForm.value.variables.reduce((acc, cur) => {
       acc[cur.key] = cur.value;
       return acc;
@@ -126,7 +126,7 @@ const onCardSubmit = () => {
     })
       .finally(() => {
         cardModelForm.value = {
-          title: '',
+          name: '',
           image: '',
           description: '',
           variables: [],
@@ -143,13 +143,13 @@ const onCardEdit = (id) => {
     cardId: id,
   }).then((response) => {
     const {
-      title,
+      name,
       image,
       description,
       variables,
     } = response;
     cardModelForm.value = {
-      title,
+      name,
       image,
       description,
       variables: Object.entries(variables).map(([key, value]) => ({ key, value })),
@@ -200,7 +200,7 @@ const onCardDelete = (id) => {
 }
 .card-preview {
   max-width: 205px;
-  aspect-ratio: 0.71;
+  //aspect-ratio: 0.71;
   border: 2px #138b44 solid;
   border-radius: 8px;
   user-select: none;

@@ -33,7 +33,7 @@ export default createStore({
               .then((response) => response.data.name);
           case 2:
             return api.decks.getDeck({ gameId: arr[0], collectionId: arr[1], deckId: arr[2] })
-              .then((response) => response.data.type);
+              .then((response) => response.data.name);
           case 3:
             return api.cards.getCard({
               gameId: arr[0],
@@ -41,7 +41,7 @@ export default createStore({
               deckId: arr[2],
               cardId: arr[3],
             })
-              .then((response) => response.data.title);
+              .then((response) => response.data.name);
           default:
             return 'unknown';
         }
