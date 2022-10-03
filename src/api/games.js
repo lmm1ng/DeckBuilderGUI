@@ -6,7 +6,7 @@ export default {
     return fetch(`/api/games/${requestData.gameId}`).then((response) => response.json());
   },
   createGame(requestData) {
-    return fetch('/api/games', { method: 'POST', body: JSON.stringify(requestData) })
+    return fetch('/api/games', { method: 'POST', body: JSON.stringify(requestData.body) })
       .then((response) => response.json());
   },
   editGame(requestData) {
@@ -21,5 +21,9 @@ export default {
   },
   importGame(requestData) {
     return fetch('/api/games/import', { method: 'POST', body: requestData, headers: { ContentType: 'multipart/form-data' } });
+  },
+  duplicateGame(requestData) {
+    return fetch(`/api/games/${requestData.gameId}/duplicate`, { method: 'POST', body: JSON.stringify(requestData.body) })
+      .then((response) => response.json());
   },
 };

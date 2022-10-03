@@ -30,7 +30,8 @@
     </ui-modal>
     <ui-modal
       v-model:show="isAddModal"
-      @submit="onGameAdd"
+      :title="computedModalTitle"
+      @submit="onGameSubmit"
     >
       <div class="add-modal">
         <div class="add-modal__inputs">
@@ -54,6 +55,22 @@
         </div>
       </div>
     </ui-modal>
+    <ui-modal
+      v-model:show="isDuplicateModal"
+      title="Duplicate game"
+      @submit="onGameDuplicateSubmit"
+    >
+      <div class="duplicate-modal">
+        <img
+          class="game-preview"
+          :src="gameModelForm.image"
+          alt="preview"
+        />
+        <span class="duplicate-modal__text">{{ gameModelForm.name }}</span>
+        <span class="duplicate-modal__text">{{ gameModelForm.description }}</span>
+        <n-input placeholder="Save game as..." v-model:value="duplicateGameName"/>
+      </div>
+    </ui-modal>
     <page-header
       title="Games"
       show-buttons
@@ -73,6 +90,10 @@
           @cardClick="onGameClick"
           with-export
           @on-export="onGameExport"
+          with-duplicate
+          @on-duplicate="onGameDuplicate"
+          @on-edit="onGameEdit"
+          @on-delete="onGameDelete"
         />
       </div>
     </page-content>
@@ -87,7 +108,7 @@ import {
   computed,
   ref,
   onMounted,
-  onBeforeUnmount,
+  onBeforeUnmount, watch,
 } from 'vue';
 import { useRouter } from 'vue-router';
 import { useStore } from 'vuex';
@@ -118,13 +139,49 @@ const gameModelForm = ref({
   description: '',
 });
 
-const onGameAdd = () => {
+const editGameId = ref('_');
+
+watch(isAddModal, (val) => {
+  if (!val) {
+    editGameId.value = '_';
+    gameModelForm.value = {
+      name: '',
+      image: '',
+      description: '',
+    };
+  }
+});
+
+const computedModalTitle = computed(() => (editGameId.value === '_' ? 'Create game' : 'Edit game'));
+
+const onGameSubmit = () => {
+  const action = editGameId.value !== '_' ? 'fetchEditGame' : 'fetchAddGame';
   if (gameModelForm.value.name && gameModelForm.value.image) {
-    store.dispatch('fetchAddGame', gameModelForm.value).finally(() => {
+    store.dispatch(action, { gameId: editGameId.value, body: gameModelForm.value }).finally(() => {
       gameModelForm.value = { name: '', image: '', description: '' };
       isAddModal.value = false;
     });
   }
+};
+
+const onGameEdit = (id) => {
+  store.dispatch('fetchGame', {
+    gameId: id,
+  }).then((response) => {
+    gameModelForm.value = {
+      name: response.name,
+      image: response.image,
+      description: response.description,
+    };
+    isAddModal.value = true;
+    editGameId.value = id;
+  });
+};
+
+const onGameDelete = (id) => {
+  store.dispatch('fetchDeleteGame', {
+    gameId: id,
+  });
 };
 
 const onGameClick = (id) => {
@@ -163,8 +220,38 @@ const onGameImport = () => {
       });
   }
 };
+
 const onImportFile = ({ file }) => {
   gameImportModelForm.value.file = file.file;
+};
+
+const isDuplicateModal = ref(false);
+const duplicateGameName = ref('');
+const duplicateGameId = ref('');
+
+const onGameDuplicate = (id) => {
+  store.dispatch('fetchGame', {
+    gameId: id,
+  }).then((response) => {
+    gameModelForm.value = {
+      name: response.name,
+      image: response.cachedImage,
+      description: response.description,
+    };
+    isDuplicateModal.value = true;
+    duplicateGameId.value = id;
+  });
+};
+
+const onGameDuplicateSubmit = () => {
+  store.dispatch('fetchDuplicateGame', {
+    gameId: duplicateGameId.value,
+    body: { name: duplicateGameName.value },
+  }).then(() => {
+    isDuplicateModal.value = false;
+    duplicateGameId.value = '';
+    gameModelForm.value = { name: '', image: '', description: '' };
+  });
 };
 
 </script>
@@ -217,5 +304,16 @@ const onImportFile = ({ file }) => {
   justify-content: center;
   flex-direction: column;
   gap: 30px;
+}
+
+.duplicate-modal {
+  padding: 10px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  &__text {
+    margin-bottom: 5px;
+    font-weight: bold;
+  }
 }
 </style>

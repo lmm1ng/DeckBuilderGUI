@@ -52,6 +52,10 @@ const props = defineProps({
     type: Boolean,
     default: false,
   },
+  withDuplicate: {
+    type: Boolean,
+    default: false,
+  },
 });
 
 // context menu
@@ -65,17 +69,14 @@ const options = computed(() => {
       label: 'Change',
       key: 'change',
     },
-    {
-      label: 'Delete',
-      key: 'delete',
-    },
   ];
   if (props.withExport) {
-    optionsArr.splice(1, 0, {
-      label: 'Export',
-      key: 'export',
-    });
+    optionsArr.push({ label: 'Export', key: 'export' });
   }
+  if (props.withDuplicate) {
+    optionsArr.push({ label: 'Duplicate', key: 'duplicate' });
+  }
+  optionsArr.push({ label: 'Delete', key: 'delete' });
   return optionsArr;
 });
 
@@ -99,6 +100,9 @@ const handleSelect = (key) => {
   if (key === 'export') {
     emit('on-export', props.id);
   }
+  if (key === 'duplicate') {
+    emit('on-duplicate', props.id);
+  }
   showDropdownRef.value = false;
 };
 
@@ -113,6 +117,7 @@ const onCardClick = () => {
   border: 2px #138b44 solid;
   border-radius: 8px;
   user-select: none;
+  cursor: pointer;
 }
 
 .label {

@@ -8,3 +8,12 @@ body, #app {
   margin: 0;
 }
 </style>
+
+<script setup>
+import api from '@/api';
+
+window.onbeforeunload = function () {
+  api.system.quit();
+};
+
+</script>

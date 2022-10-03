@@ -2,7 +2,8 @@
   <div class="collections">
     <ui-modal
       v-model:show="isAddModal"
-      @submit="onCollectionAdd"
+      :title="computedModalTitle"
+      @submit="onCollectionSubmit"
     >
       <div class="add-modal">
         <div class="add-modal__inputs">
@@ -32,7 +33,7 @@
       @on-add="onAdd"
     />
     <page-content>
-      <div v-if="collections.length" class="collections__list">
+      <div class="collections__list">
         <card-el
           v-for="collection in collections"
           :key="collection.id"
@@ -41,9 +42,10 @@
           :description="collection.description"
           :id="collection.id"
           @cardClick="onCollectionClick"
+          @on-edit="onCollectionEdit"
+          @on-delete="onCollectionDelete"
         />
       </div>
-      <span v-else>Нет коллекций</span>
     </page-content>
   </div>
 </template>
@@ -57,6 +59,7 @@ import {
   ref,
   onMounted,
   onBeforeUnmount,
+  watch,
 } from 'vue';
 import { useRouter, useRoute } from 'vue-router';
 import { useStore } from 'vuex';
@@ -85,14 +88,56 @@ const collectionModelForm = ref({
   description: '',
 });
 
-const onCollectionAdd = () => {
+const editCollectionId = ref('_');
+
+watch(isAddModal, (val) => {
+  if (!val) {
+    editCollectionId.value = '_';
+    collectionModelForm.value = {
+      name: '',
+      image: '',
+      description: '',
+    };
+  }
+});
+
+const computedModalTitle = computed(() => (editCollectionId.value === '_' ? 'Create collection' : 'Edit collection'));
+
+const onCollectionSubmit = () => {
+  const action = editCollectionId.value !== '_' ? 'fetchEditCollection' : 'fetchAddCollection';
   if (collectionModelForm.value.name && collectionModelForm.value.image) {
-    store.dispatch('fetchAddCollection', { gameId: route.params.gameId, body: collectionModelForm.value })
+    store.dispatch(action, {
+      gameId: route.params.gameId,
+      collectionId: editCollectionId.value,
+      body: collectionModelForm.value,
+    })
       .finally(() => {
         collectionModelForm.value = { name: '', image: '', description: '' };
         isAddModal.value = false;
       });
   }
+};
+
+const onCollectionEdit = (id) => {
+  store.dispatch('fetchCollection', {
+    gameId: route.params.gameId,
+    collectionId: id,
+  }).then((response) => {
+    collectionModelForm.value = {
+      name: response.name,
+      image: response.image,
+      description: response.description,
+    };
+    isAddModal.value = true;
+    editCollectionId.value = id;
+  });
+};
+
+const onCollectionDelete = (id) => {
+  store.dispatch('fetchDeleteCollection', {
+    gameId: route.params.gameId,
+    collectionId: id,
+  });
 };
 
 const onCollectionClick = (id) => {
