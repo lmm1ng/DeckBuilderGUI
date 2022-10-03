@@ -6,7 +6,7 @@
         <n-breadcrumb-item
           @click="onBreadcrumbItemClick(0)"
         >
-          Deck Builder
+          DeckBuilder
         </n-breadcrumb-item>
         <n-breadcrumb-item
           v-for="(path, idx) in store.getters.getBreadcrumbPathItems"
