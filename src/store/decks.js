@@ -31,7 +31,11 @@ export default {
   actions: {
     fetchDecks({ commit }, requestData) {
       return api.decks.getDecks(requestData)
-        .then((response) => commit('setDecks', response.data));
+        .then((response) => commit('setDecks', response.data
+          .map(((deck) => ({
+            ...deck,
+            cachedImage: `/api/games/${requestData.gameId}/collections/${requestData.collectionId}/decks/${deck.id}/image`,
+          })))));
     },
     // eslint-disable-next-line no-unused-vars
     fetchDeck({ commit }, requestData) {

@@ -19,7 +19,11 @@ export default {
   },
   actions: {
     fetchGames({ commit }) {
-      return api.games.getGames().then((response) => commit('setGames', response.data));
+      return api.games.getGames().then((response) => commit('setGames', response.data
+        .map(((game) => ({
+          ...game,
+          cachedImage: `/api/games/${game.id}/image`,
+        })))));
     },
     fetchAddGame({ commit }, game) {
       return api.games.createGame(game).then((response) => commit('setAddGame', response.data));
