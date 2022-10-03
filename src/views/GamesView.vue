@@ -92,11 +92,21 @@
           @on-export="onGameExport"
           with-duplicate
           @on-duplicate="onGameDuplicate"
+          with-render
+          @on-render="onRenderGame"
           @on-edit="onGameEdit"
           @on-delete="onGameDelete"
         />
       </div>
     </page-content>
+    <div class="render-spinner" v-if="gameGeneratorProgress">
+      <n-progress
+        class="render-spinner__progress"
+        type="circle"
+        color="#169747"
+        :percentage="gameGeneratorProgress"
+      />
+    </div>
   </div>
 </template>
 
@@ -254,6 +264,26 @@ const onGameDuplicateSubmit = () => {
   });
 };
 
+const gameGeneratorInterval = ref(null);
+const gameGeneratorProgress = ref(0);
+
+const onRenderGame = (id) => {
+  store.dispatch('fetchGenerateGame', { gameId: id }).then(() => {
+    gameGeneratorInterval.value = setInterval(() => {
+      store.dispatch('fetchCheckStatus')
+        .then((status) => {
+          gameGeneratorProgress.value = Math.floor(status.progress);
+          if (status.progress === 100) {
+            clearInterval(gameGeneratorInterval.value);
+            setTimeout(() => {
+              gameGeneratorProgress.value = 0;
+            }, 500);
+          }
+        });
+    }, 500);
+  });
+};
+
 </script>
 
 <style lang="scss">
@@ -315,5 +345,16 @@ const onGameDuplicateSubmit = () => {
     margin-bottom: 5px;
     font-weight: bold;
   }
+}
+.render-spinner {
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background: rgba(227, 222, 214, 0.7);
+  display: flex;
+  justify-content: center;
+  align-items: center;
 }
 </style>

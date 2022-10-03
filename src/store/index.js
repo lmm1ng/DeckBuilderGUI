@@ -4,6 +4,7 @@ import games from './games';
 import collections from './collections';
 import decks from './decks';
 import cards from './cards';
+import system from './system';
 
 export default createStore({
   state: {
@@ -62,5 +63,6 @@ export default createStore({
     collections,
     decks,
     cards,
+    system,
   },
 });

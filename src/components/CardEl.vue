@@ -56,6 +56,10 @@ const props = defineProps({
     type: Boolean,
     default: false,
   },
+  withRender: {
+    type: Boolean,
+    default: false,
+  },
 });
 
 // context menu
@@ -75,6 +79,9 @@ const options = computed(() => {
   }
   if (props.withDuplicate) {
     optionsArr.push({ label: 'Duplicate', key: 'duplicate' });
+  }
+  if (props.withRender) {
+    optionsArr.push({ label: 'Render', key: 'render' });
   }
   optionsArr.push({ label: 'Delete', key: 'delete' });
   return optionsArr;
@@ -102,6 +109,9 @@ const handleSelect = (key) => {
   }
   if (key === 'duplicate') {
     emit('on-duplicate', props.id);
+  }
+  if (key === 'render') {
+    emit('on-render', props.id);
   }
   showDropdownRef.value = false;
 };

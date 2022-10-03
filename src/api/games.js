@@ -26,4 +26,7 @@ export default {
     return fetch(`/api/games/${requestData.gameId}/duplicate`, { method: 'POST', body: JSON.stringify(requestData.body) })
       .then((response) => response.json());
   },
+  generateGame(requestData) {
+    return fetch(`/api/games/${requestData.gameId}/generate`);
+  },
 };

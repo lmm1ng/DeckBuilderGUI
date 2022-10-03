@@ -71,5 +71,9 @@ export default {
           commit('setAddGame', response.data);
         });
     },
+    // eslint-disable-next-line no-unused-vars
+    fetchGenerateGame({ commit }, requestData) {
+      return api.games.generateGame(requestData);
+    },
   },
 };
