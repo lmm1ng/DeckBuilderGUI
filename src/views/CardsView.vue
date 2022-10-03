@@ -205,6 +205,7 @@ const onCardDelete = (id) => {
   user-select: none;
   &--unsetted {
     width: 205px;
+    aspect-ratio: 0.71;
     background-color: #138b44;
   }
 }

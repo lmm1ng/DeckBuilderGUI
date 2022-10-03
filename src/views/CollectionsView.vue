@@ -176,12 +176,12 @@ const onCollectionClick = (id) => {
 }
 .collection-preview {
   max-width: 205px;
-  aspect-ratio: 0.71;
   border: 2px #138b44 solid;
   border-radius: 8px;
   user-select: none;
   &--unsetted {
     width: 205px;
+    aspect-ratio: 0.71;
     background-color: #138b44;
   }
 }

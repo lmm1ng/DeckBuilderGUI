@@ -98,6 +98,7 @@ const emit = defineEmits(['on-add', 'on-import']);
 }
 
 .breadcrumb-path {
+  user-select: none;
   .n-breadcrumb-item:last-child .n-breadcrumb-item__link {
     font-weight: bold;
   }
