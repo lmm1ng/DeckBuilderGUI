@@ -25,7 +25,7 @@ export default {
       });
     },
     deleteCard(state, payload) {
-      state.cards = state.cards.filter((el) => el.id !== payload.cardId);
+      state.cards = state.cards.filter((el) => String(el.id) !== payload.cardId);
     },
   },
   actions: {
