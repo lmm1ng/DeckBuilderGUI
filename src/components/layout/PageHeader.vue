@@ -1,5 +1,18 @@
 <template>
   <div class="page-header">
+    <n-drawer v-model:show="isDrawer">
+      <n-drawer-content title="Filters">
+        <n-form>
+          <n-form-item label="Sort by:">
+            <n-select
+              :options="drawerOptions"
+              :on-update:value="onSortingSelect"
+              default-value="name"
+            />
+          </n-form-item>
+        </n-form>
+      </n-drawer-content>
+    </n-drawer>
     <span class="page-header__path">
 
       <n-breadcrumb class="breadcrumb-path">
@@ -29,7 +42,7 @@
       >
         <NoteAddOutlined />
       </Icon>
-      <Icon class="icon header__button" size="24">
+      <Icon class="icon header__button" size="24" @click="isDrawer = true">
         <SearchOutlined />
       </Icon>
     </div>
@@ -39,7 +52,7 @@
 <script setup>
 import { AddFilled, NoteAddOutlined, SearchOutlined } from '@vicons/material';
 import { Icon } from '@vicons/utils';
-import { defineProps } from 'vue';
+import { defineProps, ref, defineEmits } from 'vue';
 import { useRouter } from 'vue-router';
 import { useStore } from 'vuex';
 
@@ -61,11 +74,36 @@ const props = defineProps({
   },
 });
 
+const emit = defineEmits(['on-add', 'on-import', 'on-sort']);
+
+const isDrawer = ref(false);
+
+const drawerOptions = [
+  {
+    label: 'A-Z',
+    value: 'name',
+  },
+  {
+    label: 'Z-A',
+    value: 'name_desc',
+  },
+  {
+    label: 'Date added (oldest)',
+    value: 'created',
+  },
+  {
+    label: 'Date added (newest)',
+    value: 'created_desc',
+  },
+];
+
+const onSortingSelect = (val) => {
+  emit('on-sort', val);
+};
+
 const onBreadcrumbItemClick = (idx) => {
   router.push(`/${store.getters.getFullPathItems.slice(0, idx * 2).join('/')}`);
 };
-
-const emit = defineEmits(['on-add', 'on-import']);
 </script>
 
 <style lang="scss">
@@ -99,6 +137,9 @@ const emit = defineEmits(['on-add', 'on-import']);
 
 .breadcrumb-path {
   user-select: none;
+  &.n-breadcrumb {
+    white-space: normal;
+  }
   .n-breadcrumb-item:last-child .n-breadcrumb-item__link {
     font-weight: bold;
   }

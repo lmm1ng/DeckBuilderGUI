@@ -31,6 +31,7 @@
       title="Decks"
       show-buttons
       @on-add="onAdd"
+      @on-sort="onSort"
     />
     <page-content>
       <div class="decks__list">
@@ -68,8 +69,12 @@ const store = useStore();
 const route = useRoute();
 const router = useRouter();
 
+const fetchDecks = (config = {}) => {
+  store.dispatch('fetchDecks', { gameId: route.params.gameId, collectionId: route.params.collectionId, config });
+};
+
 onMounted(() => {
-  store.dispatch('fetchDecks', { gameId: route.params.gameId, collectionId: route.params.collectionId });
+  fetchDecks();
 });
 
 onBeforeUnmount(() => {
@@ -140,6 +145,10 @@ const onDeckDelete = (id) => {
 
 const onDeckClick = (id) => {
   router.push(`/game/${route.params.gameId}/collection/${route.params.collectionId}/deck/${id}`);
+};
+
+const onSort = (val) => {
+  fetchDecks({ sort: val });
 };
 </script>
 

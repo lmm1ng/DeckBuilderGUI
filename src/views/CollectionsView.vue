@@ -31,6 +31,7 @@
       title="Collections"
       show-buttons
       @on-add="onAdd"
+      @on-sort="onSort"
     />
     <page-content>
       <div class="collections__list">
@@ -69,8 +70,12 @@ const store = useStore();
 const route = useRoute();
 const router = useRouter();
 
+const fetchCollections = (config = {}) => {
+  store.dispatch('fetchCollections', { gameId: route.params.gameId, config });
+};
+
 onMounted(() => {
-  store.dispatch('fetchCollections', { gameId: route.params.gameId });
+  fetchCollections();
 });
 
 onBeforeUnmount(() => {
@@ -142,6 +147,10 @@ const onCollectionDelete = (id) => {
 
 const onCollectionClick = (id) => {
   router.push(`/game/${route.params.gameId}/collection/${id}`);
+};
+
+const onSort = (val) => {
+  fetchCollections({ sort: val });
 };
 </script>
 

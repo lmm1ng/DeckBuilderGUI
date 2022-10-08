@@ -1,6 +1,6 @@
 export default {
   getCards(requestData) {
-    return fetch(`/api/games/${requestData.gameId}/collections/${requestData.collectionId}/decks/${requestData.deckId}/cards`)
+    return fetch(`/api/games/${requestData.gameId}/collections/${requestData.collectionId}/decks/${requestData.deckId}/cards?${new URLSearchParams(requestData.config)}`)
       .then((response) => response.json());
   },
   getCard(requestData) {

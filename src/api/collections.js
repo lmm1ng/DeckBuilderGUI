@@ -1,6 +1,6 @@
 export default {
   getCollections(requestData) {
-    return fetch(`/api/games/${requestData.gameId}/collections`)
+    return fetch(`/api/games/${requestData.gameId}/collections?${new URLSearchParams(requestData.config)}`)
       .then((response) => response.json());
   },
   getCollection(requestData) {

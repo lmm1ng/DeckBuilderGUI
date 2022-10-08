@@ -1,6 +1,6 @@
 export default {
-  getGames() {
-    return fetch('/api/games').then((response) => response.json());
+  getGames(requestData) {
+    return fetch(`/api/games?${new URLSearchParams(requestData.config)}`).then((response) => response.json());
   },
   getGame(requestData) {
     return fetch(`/api/games/${requestData.gameId}`).then((response) => response.json());

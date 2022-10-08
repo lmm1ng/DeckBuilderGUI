@@ -12,7 +12,10 @@
       </template>
       <span>{{ props.description }}</span>
     </n-tooltip>
-    <div class="label">{{ props.name }}</div>
+    <div class="label">
+      <span>{{ props.name }}</span>
+      <span class="label__count">{{ cardCount }}</span>
+    </div>
     <n-dropdown
       placement="bottom-start"
       trigger="manual"
@@ -60,7 +63,13 @@ const props = defineProps({
     type: Boolean,
     default: false,
   },
+  count: {
+    type: Number,
+    default: 1,
+  },
 });
+
+const cardCount = computed(() => (props.count > 1 ? ` x${props.count}` : ''));
 
 // context menu
 const showDropdownRef = ref(false);
@@ -137,5 +146,11 @@ const onCardClick = () => {
   font-weight: bold;
   text-align: center;
   margin-top: 8px;
+  &__count {
+    color: grey;
+  }
+}
+.card:hover {
+  transform: scale(1.03);
 }
 </style>

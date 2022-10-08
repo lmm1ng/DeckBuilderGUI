@@ -1,6 +1,6 @@
 export default {
   getDecks(requestData) {
-    return fetch(`/api/games/${requestData.gameId}/collections/${requestData.collectionId}/decks`)
+    return fetch(`/api/games/${requestData.gameId}/collections/${requestData.collectionId}/decks?${new URLSearchParams(requestData.config)}`)
       .then((response) => response.json());
   },
   getDeck(requestData) {

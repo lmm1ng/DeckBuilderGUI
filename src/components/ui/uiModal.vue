@@ -1,5 +1,10 @@
 <template>
-  <div :class="['modal', { 'modal--active': props.show }]">
+  <div
+    :class="['modal', { 'modal--active': isShow }]"
+    @keydown="onKeyDown"
+    ref="modal"
+    tabindex="0"
+  >
     <div class="modal__wrapper">
       <div class="modal__header">
         {{ title }}
@@ -8,7 +13,7 @@
         <slot/>
       </div>
       <div class="modal__buttons">
-        <n-button type="error" @click="emit('update:show', false)">cancel</n-button>
+        <n-button type="error" @click="isShow = false">cancel</n-button>
         <n-button type="primary" @click="emit('submit')">okay</n-button>
       </div>
     </div>
@@ -16,6 +21,13 @@
 </template>
 
 <script setup>
+import {
+  ref,
+  watch,
+  nextTick,
+  computed,
+} from 'vue';
+
 const props = defineProps({
   show: {
     type: Boolean,
@@ -28,6 +40,33 @@ const props = defineProps({
 });
 
 const emit = defineEmits(['update:show', 'submit']);
+
+const isShow = computed({
+  get() {
+    return props.show;
+  },
+  set(val) {
+    emit('update:show', val);
+  },
+});
+
+const modal = ref(null);
+
+watch(isShow, (val) => {
+  if (val) {
+    nextTick(() => {
+      modal.value.focus();
+    });
+  }
+});
+
+const onKeyDown = (e) => {
+  if (e.code === 'Escape') {
+    isShow.value = false;
+  } else if (e.code === 'Enter' && !e.shiftKey) {
+    emit('submit');
+  }
+};
 </script>
 
 <style lang="scss">

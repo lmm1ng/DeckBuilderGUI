@@ -10,6 +10,7 @@
           ref="uploader"
           :on-change="onImportFile"
           :max="1"
+          accept=".zip"
         >
           <n-upload-dragger style="background: #E3DED6;">
             <div style="margin-bottom: 12px">
@@ -76,6 +77,7 @@
       show-buttons
       @on-add="onAdd"
       @on-import="onImport"
+      @on-sort="onSort"
       with-import
     />
     <page-content>
@@ -129,8 +131,12 @@ import { ArchiveOutlined } from '@vicons/material';
 const store = useStore();
 const router = useRouter();
 
+const fetchGames = (config = {}) => {
+  store.dispatch('fetchGames', { config });
+};
+
 onMounted(() => {
-  store.dispatch('fetchGames');
+  fetchGames();
 });
 
 onBeforeUnmount(() => {
@@ -261,7 +267,11 @@ const onGameDuplicateSubmit = () => {
     isDuplicateModal.value = false;
     duplicateGameId.value = '';
     gameModelForm.value = { name: '', image: '', description: '' };
-  });
+  })
+    .finally(() => {
+      duplicateGameId.value = '';
+      duplicateGameName.value = '';
+    });
 };
 
 const gameGeneratorInterval = ref(null);
@@ -284,6 +294,9 @@ const onRenderGame = (id) => {
   });
 };
 
+const onSort = (val) => {
+  fetchGames({ sort: val });
+};
 </script>
 
 <style lang="scss">

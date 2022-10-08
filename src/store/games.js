@@ -29,8 +29,8 @@ export default {
     },
   },
   actions: {
-    fetchGames({ commit }) {
-      return api.games.getGames().then((response) => commit('setGames', response.data));
+    fetchGames({ commit }, requestData) {
+      return api.games.getGames(requestData).then((response) => commit('setGames', response.data));
     },
     // eslint-disable-next-line no-unused-vars
     fetchGame({ commit }, requestData) {

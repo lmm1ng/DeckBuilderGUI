@@ -9,6 +9,12 @@
         <div class="add-modal__inputs">
           <n-input placeholder="Title" v-model:value="cardModelForm.name"/>
           <n-input placeholder="Image" v-model:value="cardModelForm.image"/>
+          <n-input-number
+            placeholder="Count"
+            v-model:value="cardModelForm.count"
+            :min="1"
+            :max="999"
+          />
           <n-input
             type="textarea"
             placeholder="Description"
@@ -35,6 +41,7 @@
       title="Cards"
       show-buttons
       @on-add="onAdd"
+      @on-sort="onSort"
     />
     <page-content>
       <div class="cards__list">
@@ -45,6 +52,7 @@
           :img="card.cachedImage"
           :description="card.description"
           :id="String(card.id)"
+          :count="card.count"
           @on-edit="onCardEdit"
           @on-delete="onCardDelete"
         />
@@ -71,8 +79,17 @@ import UiModal from '@/components/ui/uiModal.vue';
 const store = useStore();
 const route = useRoute();
 
+const fetchCards = (config = {}) => {
+  store.dispatch('fetchCards', {
+    gameId: route.params.gameId,
+    collectionId: route.params.collectionId,
+    deckId: route.params.deckId,
+    config,
+  });
+};
+
 onMounted(() => {
-  store.dispatch('fetchCards', { gameId: route.params.gameId, collectionId: route.params.collectionId, deckId: route.params.deckId });
+  fetchCards();
 });
 
 onBeforeUnmount(() => {
@@ -88,6 +105,7 @@ const cardModelForm = ref({
   name: '',
   image: '',
   description: '',
+  count: 1,
   variables: [],
 });
 
@@ -100,6 +118,7 @@ watch(isAddModal, (val) => {
       name: '',
       image: '',
       description: '',
+      count: 1,
       variables: [],
     };
   }
@@ -129,6 +148,7 @@ const onCardSubmit = () => {
           name: '',
           image: '',
           description: '',
+          count: 1,
           variables: [],
         };
         isAddModal.value = false;
@@ -146,12 +166,14 @@ const onCardEdit = (id) => {
       name,
       image,
       description,
+      count,
       variables,
     } = response;
     cardModelForm.value = {
       name,
       image,
       description,
+      count,
       variables: Object.entries(variables).map(([key, value]) => ({ key, value })),
     };
     isAddModal.value = true;
@@ -166,6 +188,10 @@ const onCardDelete = (id) => {
     deckId: route.params.deckId,
     cardId: id,
   });
+};
+
+const onSort = (val) => {
+  fetchCards({ sort: val });
 };
 </script>
 
