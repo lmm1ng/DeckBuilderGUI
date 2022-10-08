@@ -40,6 +40,7 @@
     <page-header
       title="Cards"
       show-buttons
+      createTooltipText="Create card"
       @on-add="onAdd"
       @on-sort="onSort"
     />

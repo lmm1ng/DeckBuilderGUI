@@ -30,6 +30,7 @@
     <page-header
       title="Decks"
       show-buttons
+      createTooltipText="Create deck"
       @on-add="onAdd"
       @on-sort="onSort"
     />

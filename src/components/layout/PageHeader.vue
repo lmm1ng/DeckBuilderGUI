@@ -31,20 +31,34 @@
       </n-breadcrumb>
     </span>
     <div class="page-header__buttons" v-if="props.showButtons">
-      <Icon class="icon header__button" size="24" @click="emit('on-add')">
-        <AddFilled />
-      </Icon>
-      <Icon
-        class="icon header__button"
-        size="24"
-        v-if="props.withImport"
-        @click="emit('on-import')"
-      >
-        <NoteAddOutlined />
-      </Icon>
-      <Icon class="icon header__button" size="24" @click="isDrawer = true">
-        <SearchOutlined />
-      </Icon>
+      <n-tooltip trigger="hover" :delay="300">
+        <template #trigger>
+          <Icon class="icon header__button" size="24" @click="emit('on-add')">
+            <AddFilled />
+          </Icon>
+        </template>
+        <span>{{createTooltipText}}</span>
+      </n-tooltip>
+      <n-tooltip v-if="props.withImport" trigger="hover" :delay="300">
+        <template #trigger>
+          <Icon
+            class="icon header__button"
+            size="24"
+            @click="emit('on-import')"
+          >
+            <NoteAddOutlined />
+          </Icon>
+        </template>
+        <span>Import game</span>
+      </n-tooltip>
+      <n-tooltip trigger="hover" :delay="300">
+        <template #trigger>
+          <Icon class="icon header__button" size="24" @click="isDrawer = true">
+            <SearchOutlined />
+          </Icon>
+        </template>
+        <span>Filters</span>
+      </n-tooltip>
     </div>
   </div>
 </template>
@@ -71,6 +85,10 @@ const props = defineProps({
   withImport: {
     type: Boolean,
     default: false,
+  },
+  createTooltipText: {
+    type: String,
+    default: '',
   },
 });
 

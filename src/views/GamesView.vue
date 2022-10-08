@@ -75,6 +75,7 @@
     <page-header
       title="Games"
       show-buttons
+      createTooltipText="Create game"
       @on-add="onAdd"
       @on-import="onImport"
       @on-sort="onSort"

@@ -30,6 +30,7 @@
     <page-header
       title="Collections"
       show-buttons
+      createTooltipText="Create collection"
       @on-add="onAdd"
       @on-sort="onSort"
     />
