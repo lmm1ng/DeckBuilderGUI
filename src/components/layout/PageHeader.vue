@@ -1,7 +1,7 @@
 <template>
   <div class="page-header">
     <n-drawer v-model:show="isDrawer">
-      <n-drawer-content title="Filters">
+      <n-drawer-content title="Filters" footer-style="flex-direction: column;">
         <n-form>
           <n-form-item label="Sort by:">
             <n-select
@@ -11,6 +11,33 @@
             />
           </n-form-item>
         </n-form>
+        <template #footer>
+          <div>Developed by:</div>
+          <div>
+            <n-button
+              text
+              tag="a"
+              href="https://github.com/HardDie"
+              target="_blank"
+              type="primary"
+              block
+              style="justify-content: flex-start"
+            >
+              @harddie
+            </n-button>
+            <n-button
+              text
+              tag="a"
+              href="https://github.com/lmm1ng"
+              target="_blank"
+              type="primary"
+              block
+              style="justify-content: flex-start"
+            >
+              @lemm1ng
+            </n-button>
+          </div>
+        </template>
       </n-drawer-content>
     </n-drawer>
     <span class="page-header__path">
