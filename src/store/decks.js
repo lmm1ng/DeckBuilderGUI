@@ -19,7 +19,7 @@ export default {
     replaceDeck(state, payload) {
       state.decks = state.decks.map((deck) => {
         if (deck.id === payload.oldId) {
-          return payload;
+          return { ...payload, cachedImage: `${payload.cachedImage}?${Math.random()}` };
         }
         return deck;
       });

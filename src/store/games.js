@@ -19,7 +19,7 @@ export default {
     replaceGame(state, payload) {
       state.games = state.games.map((game) => {
         if (game.id === payload.oldId) {
-          return payload;
+          return { ...payload, cachedImage: `${payload.cachedImage}?${Math.random()}` };
         }
         return game;
       });

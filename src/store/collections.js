@@ -19,7 +19,7 @@ export default {
     replaceCollection(state, payload) {
       state.collections = state.collections.map((collection) => {
         if (collection.id === payload.oldId) {
-          return payload;
+          return { ...payload, cachedImage: `${payload.cachedImage}?${Math.random()}` };
         }
         return collection;
       });

@@ -19,7 +19,7 @@ export default {
     replaceCard(state, payload) {
       state.cards = state.cards.map((card) => {
         if (card.id === payload.id) {
-          return payload;
+          return { ...payload, cachedImage: `${payload.cachedImage}?${Math.random()}` };
         }
         return card;
       });
