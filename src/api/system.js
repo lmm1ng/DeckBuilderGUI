@@ -5,4 +5,7 @@ export default {
   checkStatus() {
     return fetch('/api/system/status').then((response) => response.json());
   },
+  getVersion() {
+    return fetch('/api/system/version').then((response) => response.json());
+  },
 };

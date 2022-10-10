@@ -51,9 +51,9 @@ export default {
         });
       });
     },
-    // eslint-disable-next-line no-unused-vars
     fetchImportGame({ commit }, requestData) {
-      return api.games.importGame(requestData);
+      return api.games.importGame(requestData)
+        .then((response) => commit('setAddGame', response.data));
     },
     fetchEditGame({ commit }, requestData) {
       return api.games.editGame(requestData).then((response) => {

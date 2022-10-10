@@ -8,7 +8,7 @@
       <div class="add-modal">
         <div class="add-modal__inputs">
           <n-input placeholder="Title" v-model:value="cardModelForm.name"/>
-          <n-input placeholder="Image" v-model:value="cardModelForm.image"/>
+          <n-input placeholder="Image link" v-model:value="cardModelForm.image"/>
           <n-input-number
             placeholder="Count"
             v-model:value="cardModelForm.count"

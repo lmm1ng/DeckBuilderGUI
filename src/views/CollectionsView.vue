@@ -8,7 +8,7 @@
       <div class="add-modal">
         <div class="add-modal__inputs">
           <n-input placeholder="Title" v-model:value="collectionModelForm.name"/>
-          <n-input placeholder="Image" v-model:value="collectionModelForm.image"/>
+          <n-input placeholder="Image link" v-model:value="collectionModelForm.image"/>
           <n-input
             type="textarea"
             placeholder="Description"

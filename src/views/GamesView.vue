@@ -37,7 +37,7 @@
       <div class="add-modal">
         <div class="add-modal__inputs">
           <n-input placeholder="Title" v-model:value="gameModelForm.name"/>
-          <n-input placeholder="Image" v-model:value="gameModelForm.image"/>
+          <n-input placeholder="Image link" v-model:value="gameModelForm.image"/>
           <n-input
             type="textarea"
             placeholder="Description"
@@ -226,7 +226,7 @@ const onGameImport = () => {
     const formData = new FormData();
     formData.append('name', gameImportModelForm.value.name);
     formData.append('file', gameImportModelForm.value.file);
-    store.dispatch('fetchImportGame', formData).then(() => store.dispatch('fetchGames'))
+    store.dispatch('fetchImportGame', formData)
       .finally(() => {
         gameImportModelForm.value = {
           name: '',
@@ -284,7 +284,7 @@ const onRenderGame = (id) => {
       store.dispatch('fetchCheckStatus')
         .then((status) => {
           gameGeneratorProgress.value = Math.floor(status.progress);
-          if (status.progress === 100) {
+          if (status.status !== 'in_progress') {
             clearInterval(gameGeneratorInterval.value);
             setTimeout(() => {
               gameGeneratorProgress.value = 0;
