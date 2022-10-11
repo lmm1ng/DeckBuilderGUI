@@ -2,6 +2,7 @@
   <div class="games">
     <ui-modal
       v-model:show="isImportModal"
+      title="Import game"
       @submit="onGameImport"
     >
       <div class="import-modal">
@@ -83,23 +84,25 @@
     />
     <page-content>
       <div class="games__list">
-        <card-el
-          v-for="game in games"
-          :id="game.id"
-          :key="game.id"
-          :name="game.name"
-          :img="game.cachedImage"
-          :description="game.description"
-          @cardClick="onGameClick"
-          with-export
-          @on-export="onGameExport"
-          with-duplicate
-          @on-duplicate="onGameDuplicate"
-          with-render
-          @on-render="onRenderGame"
-          @on-edit="onGameEdit"
-          @on-delete="onGameDelete"
-        />
+        <transition-group name="slide-fade">
+          <card-el
+            v-for="game in games"
+            :id="game.id"
+            :key="game.id"
+            :name="game.name"
+            :img="game.cachedImage"
+            :description="game.description"
+            @cardClick="onGameClick"
+            with-export
+            @on-export="onGameExport"
+            with-duplicate
+            @on-duplicate="onGameDuplicate"
+            with-render
+            @on-render="onRenderGame"
+            @on-edit="onGameEdit"
+            @on-delete="onGameDelete"
+          />
+        </transition-group>
       </div>
     </page-content>
     <div class="render-spinner" v-if="gameGeneratorProgress">

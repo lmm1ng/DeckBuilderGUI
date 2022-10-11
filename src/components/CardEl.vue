@@ -5,6 +5,7 @@
         <img
           @contextmenu="onRightClick"
           class="img"
+          rel="preload"
           :src="props.img"
           :alt="props.title"
           @click="onCardClick"

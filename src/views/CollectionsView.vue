@@ -36,17 +36,19 @@
     />
     <page-content>
       <div class="collections__list">
-        <card-el
-          v-for="collection in collections"
-          :key="collection.id"
-          :name="collection.name"
-          :img="collection.cachedImage"
-          :description="collection.description"
-          :id="collection.id"
-          @cardClick="onCollectionClick"
-          @on-edit="onCollectionEdit"
-          @on-delete="onCollectionDelete"
-        />
+        <transition-group name="slide-fade">
+          <card-el
+            v-for="collection in collections"
+            :key="collection.id"
+            :name="collection.name"
+            :img="collection.cachedImage"
+            :description="collection.description"
+            :id="collection.id"
+            @cardClick="onCollectionClick"
+            @on-edit="onCollectionEdit"
+            @on-delete="onCollectionDelete"
+          />
+        </transition-group>
       </div>
     </page-content>
   </div>

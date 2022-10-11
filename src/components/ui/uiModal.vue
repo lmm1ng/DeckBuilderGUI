@@ -1,23 +1,26 @@
 <template>
-  <div
-    :class="['modal', { 'modal--active': isShow }]"
-    @keydown="onKeyDown"
-    ref="modal"
-    tabindex="0"
-  >
-    <div class="modal__wrapper">
-      <div class="modal__header">
-        {{ title }}
-      </div>
-      <div class="modal__content">
-        <slot/>
-      </div>
-      <div class="modal__buttons">
-        <n-button type="error" @click="isShow = false">cancel</n-button>
-        <n-button type="primary" @click="emit('submit')">okay</n-button>
+  <transition name="fade">
+    <div
+      v-if="isShow"
+      class="modal"
+      @keydown="onKeyDown"
+      ref="modal"
+      tabindex="0"
+    >
+      <div class="modal__wrapper">
+        <div class="modal__header">
+          {{ title }}
+        </div>
+        <div class="modal__content">
+          <slot/>
+        </div>
+        <div class="modal__buttons">
+          <n-button type="error" @click="isShow = false">cancel</n-button>
+          <n-button type="primary" @click="emit('submit')">okay</n-button>
+        </div>
       </div>
     </div>
-  </div>
+  </transition>
 </template>
 
 <script setup>
@@ -71,18 +74,15 @@ const onKeyDown = (e) => {
 
 <style lang="scss">
 .modal {
-  display: none;
   position: absolute;
+  display: flex;
+  justify-content: center;
+  align-items: center;
   top: 0;
   right: 0;
   bottom: 0;
   left: 0;
   background-color: #0d5f3070;
-  &--active {
-    display: flex;
-    justify-content: center;
-    align-items: center;
-  }
   &__header {
     background-color: #169747;
     height: 30px;
@@ -110,5 +110,15 @@ const onKeyDown = (e) => {
     display: flex;
     flex-direction: column;
   }
+}
+
+.fade-enter-active,
+.fade-leave-active {
+  transition: opacity 0.3s ease;
+}
+
+.fade-enter-from,
+.fade-leave-to {
+  opacity: 0;
 }
 </style>

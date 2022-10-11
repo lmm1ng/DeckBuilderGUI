@@ -46,17 +46,19 @@
     />
     <page-content>
       <div class="cards__list">
-        <card-el
-          v-for="card in cards"
-          :key="card.id"
-          :name="card.name"
-          :img="card.cachedImage"
-          :description="card.description"
-          :id="String(card.id)"
-          :count="card.count"
-          @on-edit="onCardEdit"
-          @on-delete="onCardDelete"
-        />
+        <transition-group name="slide-fade">
+          <card-el
+            v-for="card in cards"
+            :key="card.id"
+            :name="card.name"
+            :img="card.cachedImage"
+            :description="card.description"
+            :id="String(card.id)"
+            :count="card.count"
+            @on-edit="onCardEdit"
+            @on-delete="onCardDelete"
+          />
+        </transition-group>
       </div>
     </page-content>
   </div>
