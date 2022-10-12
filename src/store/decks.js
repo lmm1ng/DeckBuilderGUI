@@ -3,10 +3,14 @@ import api from '@/api';
 export default {
   state: {
     decks: [],
+    isDecksLoading: false,
   },
   getters: {
     getDecks(state) {
       return state.decks;
+    },
+    isDecksLoading(state) {
+      return state.isDecksLoading;
     },
   },
   mutations: {
@@ -27,11 +31,19 @@ export default {
     deleteDeck(state, payload) {
       state.decks = state.decks.filter((el) => el.id !== payload.deckId);
     },
+    setDecksLoading(state, payload) {
+      state.isDecksLoading = payload;
+    },
   },
   actions: {
-    fetchDecks({ commit }, requestData) {
-      return api.decks.getDecks(requestData)
-        .then((response) => commit('setDecks', response.data));
+    fetchDecks({ commit, rootGetters }, requestData) {
+      commit('setDecksLoading', true);
+      return api.decks.getDecks({
+        ...requestData,
+        config: { sort: rootGetters.getSortValue },
+      })
+        .then((response) => commit('setDecks', response.data))
+        .finally(() => commit('setDecksLoading', false));
     },
     // eslint-disable-next-line no-unused-vars
     fetchDeck({ commit }, requestData) {

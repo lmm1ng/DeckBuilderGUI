@@ -5,9 +5,9 @@
         <n-form>
           <n-form-item label="Sort by:">
             <n-select
+              :value="store.getters.getSortValue"
               :options="drawerOptions"
               :on-update:value="onSortingSelect"
-              default-value="name"
             />
           </n-form-item>
         </n-form>
@@ -143,7 +143,8 @@ const drawerOptions = [
 ];
 
 const onSortingSelect = (val) => {
-  emit('on-sort', val);
+  store.commit('setSortValue', val);
+  emit('on-sort');
 };
 
 const onBreadcrumbItemClick = (idx) => {

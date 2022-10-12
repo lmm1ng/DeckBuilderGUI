@@ -45,20 +45,24 @@
       @on-sort="onSort"
     />
     <page-content>
-      <div class="cards__list">
-        <transition-group name="slide-fade">
-          <card-el
-            v-for="card in cards"
-            :key="card.id"
-            :name="card.name"
-            :img="card.cachedImage"
-            :description="card.description"
-            :id="String(card.id)"
-            :count="card.count"
-            @on-edit="onCardEdit"
-            @on-delete="onCardDelete"
-          />
-        </transition-group>
+      <transition-group name="slide-fade">
+        <div v-if="cards.length" class="cards__list">
+            <card-el
+              v-for="card in cards"
+              :key="card.id"
+              :name="card.name"
+              :img="card.cachedImage"
+              :description="card.description"
+              :id="String(card.id)"
+              :count="card.count"
+              :disable-hover="true"
+              @on-edit="onCardEdit"
+              @on-delete="onCardDelete"
+            />
+        </div>
+      </transition-group>
+      <div v-if="!cards.length && !isCardsLoading" class="empty-filler">
+        There is no cards
       </div>
     </page-content>
   </div>
@@ -82,12 +86,11 @@ import UiModal from '@/components/ui/uiModal.vue';
 const store = useStore();
 const route = useRoute();
 
-const fetchCards = (config = {}) => {
+const fetchCards = () => {
   store.dispatch('fetchCards', {
     gameId: route.params.gameId,
     collectionId: route.params.collectionId,
     deckId: route.params.deckId,
-    config,
   });
 };
 
@@ -100,6 +103,8 @@ onBeforeUnmount(() => {
 });
 
 const cards = computed(() => store.getters.getCards);
+const isCardsLoading = computed(() => store.getters.isCardsLoading);
+
 const isAddModal = ref(false);
 const onAdd = () => {
   isAddModal.value = true;
@@ -193,8 +198,8 @@ const onCardDelete = (id) => {
   });
 };
 
-const onSort = (val) => {
-  fetchCards({ sort: val });
+const onSort = () => {
+  fetchCards();
 };
 </script>
 

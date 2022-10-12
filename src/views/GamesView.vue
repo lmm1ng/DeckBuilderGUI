@@ -83,26 +83,29 @@
       with-import
     />
     <page-content>
-      <div class="games__list">
-        <transition-group name="slide-fade">
-          <card-el
-            v-for="game in games"
-            :id="game.id"
-            :key="game.id"
-            :name="game.name"
-            :img="game.cachedImage"
-            :description="game.description"
-            @cardClick="onGameClick"
-            with-export
-            @on-export="onGameExport"
-            with-duplicate
-            @on-duplicate="onGameDuplicate"
-            with-render
-            @on-render="onRenderGame"
-            @on-edit="onGameEdit"
-            @on-delete="onGameDelete"
-          />
-        </transition-group>
+      <transition-group name="slide-fade">
+        <div v-if="games.length" class="games__list">
+            <card-el
+              v-for="game in games"
+              :id="game.id"
+              :key="game.id"
+              :name="game.name"
+              :img="game.cachedImage"
+              :description="game.description"
+              @cardClick="onGameClick"
+              with-export
+              @on-export="onGameExport"
+              with-duplicate
+              @on-duplicate="onGameDuplicate"
+              with-render
+              @on-render="onRenderGame"
+              @on-edit="onGameEdit"
+              @on-delete="onGameDelete"
+            />
+        </div>
+      </transition-group>
+      <div v-if="!games.length && !isGamesLoading" class="empty-filler">
+        There is no games
       </div>
     </page-content>
     <div class="render-spinner" v-if="gameGeneratorProgress">
@@ -135,8 +138,8 @@ import { ArchiveOutlined } from '@vicons/material';
 const store = useStore();
 const router = useRouter();
 
-const fetchGames = (config = {}) => {
-  store.dispatch('fetchGames', { config });
+const fetchGames = () => {
+  store.dispatch('fetchGames');
 };
 
 onMounted(() => {
@@ -148,6 +151,8 @@ onBeforeUnmount(() => {
 });
 
 const games = computed(() => store.getters.getGames);
+const isGamesLoading = computed(() => store.getters.isGamesLoading);
+
 const isAddModal = ref(false);
 const onAdd = () => {
   isAddModal.value = true;
@@ -298,8 +303,8 @@ const onRenderGame = (id) => {
   });
 };
 
-const onSort = (val) => {
-  fetchGames({ sort: val });
+const onSort = () => {
+  fetchGames();
 };
 </script>
 

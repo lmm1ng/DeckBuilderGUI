@@ -1,5 +1,5 @@
 <template>
-  <div class="card">
+  <div :class="['card', { 'card--hover': !disableHover }]">
     <n-tooltip trigger="hover" placement="bottom" :delay="1000">
       <template #trigger>
         <img
@@ -67,6 +67,10 @@ const props = defineProps({
   count: {
     type: Number,
     default: 1,
+  },
+  disableHover: {
+    type: Boolean,
+    default: false,
   },
 });
 
@@ -151,7 +155,9 @@ const onCardClick = () => {
     color: grey;
   }
 }
-.card:hover {
-  transform: scale(1.03);
+.card {
+  &--hover:hover {
+    transform: scale(1.03);
+  }
 }
 </style>

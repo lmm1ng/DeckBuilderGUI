@@ -37,6 +37,15 @@ window.onbeforeunload = function () {
   color: grey;
 }
 
+.empty-filler {
+  position: absolute;
+  top: calc(50% + 28px);
+  left: 50%;
+  transform: translate(-50%, -50%);
+  font-size: 2rem;
+  color: grey;
+}
+
 // card transition
 
 .slide-fade-enter-active {

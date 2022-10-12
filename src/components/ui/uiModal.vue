@@ -82,6 +82,7 @@ const onKeyDown = (e) => {
   right: 0;
   bottom: 0;
   left: 0;
+  z-index: 1;
   background-color: #0d5f3070;
   &__header {
     background-color: #169747;

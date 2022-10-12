@@ -35,20 +35,23 @@
       @on-sort="onSort"
     />
     <page-content>
-      <div class="decks__list">
-        <transition-group name="slide-fade">
-          <card-el
-            v-for="deck in decks"
-            :key="deck.id"
-            :name="deck.name"
-            :img="deck.cachedImage"
-            :description="deck.description"
-            :id="deck.id"
-            @cardClick="onDeckClick"
-            @on-edit="onDeckEdit"
-            @on-delete="onDeckDelete"
-          />
-        </transition-group>
+      <transition-group name="slide-fade">
+        <div v-if="decks.length" class="decks__list">
+            <card-el
+              v-for="deck in decks"
+              :key="deck.id"
+              :name="deck.name"
+              :img="deck.cachedImage"
+              :description="deck.description"
+              :id="deck.id"
+              @cardClick="onDeckClick"
+              @on-edit="onDeckEdit"
+              @on-delete="onDeckDelete"
+            />
+        </div>
+      </transition-group>
+      <div v-if="!decks.length && !isDecksLoading" class="empty-filler">
+        There is no decks
       </div>
     </page-content>
   </div>
@@ -72,8 +75,8 @@ const store = useStore();
 const route = useRoute();
 const router = useRouter();
 
-const fetchDecks = (config = {}) => {
-  store.dispatch('fetchDecks', { gameId: route.params.gameId, collectionId: route.params.collectionId, config });
+const fetchDecks = () => {
+  store.dispatch('fetchDecks', { gameId: route.params.gameId, collectionId: route.params.collectionId });
 };
 
 onMounted(() => {
@@ -85,6 +88,8 @@ onBeforeUnmount(() => {
 });
 
 const decks = computed(() => store.getters.getDecks);
+const isDecksLoading = computed(() => store.getters.isDecksLoading);
+
 const isAddModal = ref(false);
 const onAdd = () => {
   isAddModal.value = true;
@@ -150,8 +155,8 @@ const onDeckClick = (id) => {
   router.push(`/game/${route.params.gameId}/collection/${route.params.collectionId}/deck/${id}`);
 };
 
-const onSort = (val) => {
-  fetchDecks({ sort: val });
+const onSort = () => {
+  fetchDecks();
 };
 </script>
 

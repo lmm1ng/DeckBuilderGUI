@@ -35,20 +35,23 @@
       @on-sort="onSort"
     />
     <page-content>
-      <div class="collections__list">
-        <transition-group name="slide-fade">
-          <card-el
-            v-for="collection in collections"
-            :key="collection.id"
-            :name="collection.name"
-            :img="collection.cachedImage"
-            :description="collection.description"
-            :id="collection.id"
-            @cardClick="onCollectionClick"
-            @on-edit="onCollectionEdit"
-            @on-delete="onCollectionDelete"
-          />
-        </transition-group>
+      <transition-group name="slide-fade">
+        <div v-if="collections.length" class="collections__list">
+            <card-el
+              v-for="collection in collections"
+              :key="collection.id"
+              :name="collection.name"
+              :img="collection.cachedImage"
+              :description="collection.description"
+              :id="collection.id"
+              @cardClick="onCollectionClick"
+              @on-edit="onCollectionEdit"
+              @on-delete="onCollectionDelete"
+            />
+        </div>
+      </transition-group>
+      <div v-if="!collections.length && !isCollectionsLoading" class="empty-filler">
+        There is no collections
       </div>
     </page-content>
   </div>
@@ -73,8 +76,8 @@ const store = useStore();
 const route = useRoute();
 const router = useRouter();
 
-const fetchCollections = (config = {}) => {
-  store.dispatch('fetchCollections', { gameId: route.params.gameId, config });
+const fetchCollections = () => {
+  store.dispatch('fetchCollections', { gameId: route.params.gameId });
 };
 
 onMounted(() => {
@@ -86,6 +89,8 @@ onBeforeUnmount(() => {
 });
 
 const collections = computed(() => store.getters.getCollections);
+const isCollectionsLoading = computed(() => store.getters.isCollectionsLoading);
+
 const isAddModal = ref(false);
 const onAdd = () => {
   isAddModal.value = true;
@@ -152,8 +157,8 @@ const onCollectionClick = (id) => {
   router.push(`/game/${route.params.gameId}/collection/${id}`);
 };
 
-const onSort = (val) => {
-  fetchCollections({ sort: val });
+const onSort = () => {
+  fetchCollections();
 };
 </script>
 

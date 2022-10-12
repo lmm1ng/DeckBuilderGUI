@@ -3,10 +3,14 @@ import api from '@/api';
 export default {
   state: {
     cards: [],
+    isCardsLoading: false,
   },
   getters: {
     getCards(state) {
       return state.cards;
+    },
+    isCardsLoading(state) {
+      return state.isCardsLoading;
     },
   },
   mutations: {
@@ -27,11 +31,19 @@ export default {
     deleteCard(state, payload) {
       state.cards = state.cards.filter((el) => String(el.id) !== payload.cardId);
     },
+    setCardsLoading(state, payload) {
+      state.isCardsLoading = payload;
+    },
   },
   actions: {
-    fetchCards({ commit }, requestData) {
-      return api.cards.getCards(requestData)
-        .then((response) => commit('setCards', response.data));
+    fetchCards({ commit, rootGetters }, requestData) {
+      commit('setCardsLoading', true);
+      return api.cards.getCards({
+        ...requestData,
+        config: { sort: rootGetters.getSortValue },
+      })
+        .then((response) => commit('setCards', response.data))
+        .finally(() => commit('setCardsLoading', false));
     },
     // eslint-disable-next-line no-unused-vars
     fetchCard({ commit }, requestData) {

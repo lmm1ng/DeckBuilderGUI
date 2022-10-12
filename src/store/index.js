@@ -10,6 +10,7 @@ export default createStore({
   state: {
     pathItems: [],
     breadcrumbPathItems: [],
+    sortValue: 'name',
   },
   getters: {
     getFullPathItems(state) {
@@ -17,6 +18,9 @@ export default createStore({
     },
     getBreadcrumbPathItems(state) {
       return state.breadcrumbPathItems;
+    },
+    getSortValue(state) {
+      return state.sortValue;
     },
   },
   actions: {
@@ -56,6 +60,9 @@ export default createStore({
     },
     setBreadcrumbPathItems(state, payload) {
       state.breadcrumbPathItems = payload;
+    },
+    setSortValue(state, payload) {
+      state.sortValue = payload;
     },
   },
   modules: {
