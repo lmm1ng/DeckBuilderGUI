@@ -1,4 +1,4 @@
-# tts_gui
+# DeckBuilderGUI
 
 ## Project setup
 ```
