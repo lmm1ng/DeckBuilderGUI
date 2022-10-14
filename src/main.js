@@ -2,6 +2,8 @@ import { createApp } from 'vue';
 // eslint-disable-next-line import/no-extraneous-dependencies
 import naive from 'naive-ui';
 import { createPinia } from 'pinia';
+import Toast from 'vue-toastification';
+import 'vue-toastification/dist/index.css';
 import App from './App.vue';
 import router from './router';
 
@@ -11,4 +13,5 @@ createApp(App)
   .use(router)
   .use(naive)
   .use(pinia)
+  .use(Toast)
   .mount('#app');
