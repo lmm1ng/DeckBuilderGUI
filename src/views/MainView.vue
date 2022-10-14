@@ -3,7 +3,7 @@
     <add-modal
       v-model:show="isAddModal"
       :initial-data="tempItem"
-      title="Title"
+      :entity-type="mainStore.itemType"
       :count="mainStore.itemType === 'cards'"
       :variables="mainStore.itemType === 'cards'"
       @submit="onAdd"
@@ -35,6 +35,7 @@
             :name="item.name"
             :img="item.cachedImage"
             :description="item.description"
+            :count="item.count"
             :clickable="mainStore.itemType !== 'cards'"
             @card-click="onItemClick"
             :with-export="mainStore.itemType === 'games'"
@@ -82,6 +83,9 @@ import AddModal from '@/components/modals/AddModal.vue';
 import DuplicateModal from '@/components/modals/DuplicateModal.vue';
 import ImportModal from '@/components/modals/ImportModal.vue';
 import CardEl from '@/components/CardEl.vue';
+
+// eslint-disable-next-line import/no-extraneous-dependencies
+import { useDialog } from 'naive-ui';
 
 const router = useRouter();
 const route = useRoute();
@@ -150,7 +154,7 @@ const openAddModal = (id) => {
 };
 
 const onAdd = ({ mode, data }) => {
-  const action = mode === 'add' ? itemsStore.fetchCreateItem : itemsStore.fetchEditItem;
+  const action = mode === 'create' ? itemsStore.fetchCreateItem : itemsStore.fetchEditItem;
   action({
     body: data,
     ...route.params,
@@ -176,8 +180,20 @@ const onDuplicate = (name) => {
     });
 };
 
+const dialog = useDialog();
 const onDeleteItem = (id) => {
-  itemsStore.fetchDeleteItem({ ...route.params, [currentPathId.value]: id, id });
+  dialog.error({
+    title: 'Delete confirmation',
+    content: 'Are you sure you want to permanently delete item?',
+    positiveText: 'Delete',
+    negativeText: 'Cancel',
+    showIcon: false,
+    onPositiveClick: () => itemsStore.fetchDeleteItem({
+      ...route.params,
+      [currentPathId.value]: id,
+      id,
+    }),
+  });
 };
 
 const onImport = (data) => {
@@ -235,6 +251,16 @@ onBeforeUnmount(() => {
     gap: 20px;
     justify-content: center;
   }
+}
+
+.empty-filler {
+  position: absolute;
+  top: calc(50% + 28px);
+  left: 50%;
+  transform: translate(-50%, -50%);
+  font-size: 2rem;
+  color: grey;
+  user-select: none;
 }
 
 .render-spinner {

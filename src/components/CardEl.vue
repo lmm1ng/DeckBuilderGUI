@@ -1,6 +1,11 @@
 <template>
   <div :class="['card', { 'card--hover': props.clickable }]">
-    <n-tooltip trigger="hover" placement="bottom" :delay="1000">
+    <n-tooltip
+      trigger="hover"
+      placement="bottom"
+      :delay="1000"
+      :disabled="!propsRef.description.value"
+    >
       <template #trigger>
         <img
           @contextmenu="onRightClick"
@@ -38,7 +43,7 @@ import {
   toRefs,
 } from 'vue';
 
-const emit = defineEmits(['card-click', 'on-edit', 'on-delete', 'on-export']);
+const emit = defineEmits(['card-click', 'on-edit', 'on-delete', 'on-export', 'on-render']);
 
 const props = defineProps({
   name: {
@@ -168,5 +173,10 @@ const onCardClick = () => {
   &--hover:hover {
     transform: scale(1.03);
   }
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  z-index: 1;
 }
 </style>

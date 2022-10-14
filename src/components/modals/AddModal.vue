@@ -1,7 +1,7 @@
 <template>
   <ui-modal
     v-model:show="isModalModel"
-    :title="props.title"
+    :title="title"
     @submit="onAdd"
   >
     <div class="add-modal">
@@ -61,7 +61,7 @@ const props = defineProps({
     type: Object,
     default: () => {},
   },
-  title: {
+  entityType: {
     type: String,
     default: '',
   },
@@ -93,6 +93,14 @@ const form = reactive({
 });
 
 const initialDataRef = toRef(props, 'initialData');
+const entityTypeRef = toRef(props, 'entityType');
+
+const mode = computed(() => (Object.keys(initialDataRef.value).length ? 'edit' : 'create'));
+
+const title = computed(() => (
+  `${mode.value[0].toUpperCase() + mode.value.slice(1)} `
+  + `${entityTypeRef.value.slice(0, entityTypeRef.value.length - 1)}`
+));
 
 watch(isModalModel, () => {
   form.name = initialDataRef.value?.name || '';
@@ -113,7 +121,7 @@ const onAdd = () => {
     ...form,
     variables,
   };
-  emit('submit', { mode: Object.keys(initialDataRef.value).length ? 'edit' : 'add', data: preparedData });
+  emit('submit', { mode: mode.value, data: preparedData });
 };
 </script>
 

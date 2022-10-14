@@ -1,5 +1,7 @@
 <template>
-  <router-view :key="router.path"/>
+  <n-dialog-provider>
+    <router-view :key="router.path"/>
+  </n-dialog-provider>
   <span class="version">{{ systemStore.version }}</span>
 </template>
 
@@ -35,17 +37,9 @@ window.onbeforeunload = function () {
 .version {
   position: absolute;
   bottom: 10px;
-  right: 10px;
+  right: 25px;
   color: grey;
-}
-
-.empty-filler {
-  position: absolute;
-  top: calc(50% + 28px);
-  left: 50%;
-  transform: translate(-50%, -50%);
-  font-size: 2rem;
-  color: grey;
+  user-select: none;
 }
 
 // card transition

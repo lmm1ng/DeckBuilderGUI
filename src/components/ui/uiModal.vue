@@ -15,8 +15,8 @@
           <slot/>
         </div>
         <div class="modal__buttons">
-          <n-button type="error" @click="isShow = false">cancel</n-button>
-          <n-button type="primary" @click="emit('submit')">okay</n-button>
+          <n-button type="error" @click="isShow = false">Cancel</n-button>
+          <n-button type="primary" @click="emit('submit')">Ok</n-button>
         </div>
       </div>
     </div>
@@ -82,7 +82,7 @@ const onKeyDown = (e) => {
   right: 0;
   bottom: 0;
   left: 0;
-  z-index: 1;
+  z-index: 2;
   background-color: #0d5f3070;
   &__header {
     background-color: #169747;
