@@ -1,33 +1,33 @@
 export default {
-  getGames(requestData) {
+  list(requestData) {
     return fetch(`/api/games?${new URLSearchParams(requestData.config)}`).then((response) => response.json());
   },
-  getGame(requestData) {
+  read(requestData) {
     return fetch(`/api/games/${requestData.gameId}`).then((response) => response.json());
   },
-  createGame(requestData) {
+  create(requestData) {
     return fetch('/api/games', { method: 'POST', body: JSON.stringify(requestData.body) })
       .then((response) => response.json());
   },
-  editGame(requestData) {
+  update(requestData) {
     return fetch(`/api/games/${requestData.gameId}`, { method: 'PATCH', body: JSON.stringify(requestData.body) })
       .then((response) => response.json());
   },
-  deleteGame(requestData) {
+  delete(requestData) {
     return fetch(`/api/games/${requestData.gameId}`, { method: 'DELETE' });
   },
-  exportGame(requestData) {
+  export(requestData) {
     return fetch(`/api/games/${requestData.gameId}/export`);
   },
-  importGame(requestData) {
+  import(requestData) {
     return fetch('/api/games/import', { method: 'POST', body: requestData, headers: { ContentType: 'multipart/form-data' } })
       .then((response) => response.json());
   },
-  duplicateGame(requestData) {
+  duplicate(requestData) {
     return fetch(`/api/games/${requestData.gameId}/duplicate`, { method: 'POST', body: JSON.stringify(requestData.body) })
       .then((response) => response.json());
   },
-  generateGame(requestData) {
+  generate(requestData) {
     return fetch(`/api/games/${requestData.gameId}/generate`);
   },
 };

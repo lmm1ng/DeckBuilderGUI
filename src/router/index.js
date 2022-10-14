@@ -1,35 +1,32 @@
 import { createRouter, createWebHistory } from 'vue-router';
-import GamesView from '@/views/GamesView.vue';
-import CollectionsView from '@/views/CollectionsView.vue';
-import DecksView from '@/views/DecksView.vue';
-import CardsView from '@/views/CardsView.vue';
+import MainView from '@/views/MainView.vue';
 
 import { setBar } from './hooks';
 
 const routes = [
   {
     path: '/',
-    name: 'Games',
+    name: 'games',
     beforeEnter: setBar,
-    component: GamesView,
+    component: MainView,
   },
   {
-    path: '/game/:gameId',
-    name: 'Collections',
+    path: '/games/:gameId',
+    name: 'collections',
     beforeEnter: setBar,
-    component: CollectionsView,
+    component: MainView,
   },
   {
-    path: '/game/:gameId/collection/:collectionId',
-    name: 'Decks',
+    path: '/games/:gameId/collections/:collectionId',
+    name: 'decks',
     beforeEnter: setBar,
-    component: DecksView,
+    component: MainView,
   },
   {
-    path: '/game/:gameId/collection/:collectionId/deck/:deckId',
-    name: 'Cards',
+    path: '/games/:gameId/collections/:collectionId/decks/:deckId',
+    name: 'cards',
     beforeEnter: setBar,
-    component: CardsView,
+    component: MainView,
   },
 ];
 

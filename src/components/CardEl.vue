@@ -1,20 +1,20 @@
 <template>
-  <div :class="['card', { 'card--hover': !disableHover }]">
+  <div :class="['card', { 'card--hover': props.clickable }]">
     <n-tooltip trigger="hover" placement="bottom" :delay="1000">
       <template #trigger>
         <img
           @contextmenu="onRightClick"
           class="img"
           rel="preload"
-          :src="props.img"
-          :alt="props.title"
+          :src="propsRef.img.value"
+          :alt="propsRef.name.value"
           @click="onCardClick"
         />
       </template>
-      <span>{{ props.description }}</span>
+      <span>{{ propsRef.description.value }}</span>
     </n-tooltip>
     <div class="label">
-      <span>{{ props.name }}</span>
+      <span>{{ propsRef.name.value }}</span>
       <span class="label__count">{{ cardCount }}</span>
     </div>
     <n-dropdown
@@ -31,9 +31,14 @@
 </template>
 
 <script setup>
-import { ref, defineEmits, computed } from 'vue';
+import {
+  ref,
+  defineEmits,
+  computed,
+  toRefs,
+} from 'vue';
 
-const emit = defineEmits(['cardClick', 'on-edit', 'on-delete', 'on-export']);
+const emit = defineEmits(['card-click', 'on-edit', 'on-delete', 'on-export']);
 
 const props = defineProps({
   name: {
@@ -68,13 +73,15 @@ const props = defineProps({
     type: Number,
     default: 1,
   },
-  disableHover: {
+  clickable: {
     type: Boolean,
     default: false,
   },
 });
 
-const cardCount = computed(() => (props.count > 1 ? ` x${props.count}` : ''));
+const propsRef = toRefs(props);
+
+const cardCount = computed(() => (propsRef.count.value > 1 ? ` x${propsRef.count.value}` : ''));
 
 // context menu
 const showDropdownRef = ref(false);
@@ -88,13 +95,13 @@ const options = computed(() => {
       key: 'change',
     },
   ];
-  if (props.withExport) {
+  if (propsRef.withExport.value) {
     optionsArr.push({ label: 'Export', key: 'export' });
   }
-  if (props.withDuplicate) {
+  if (propsRef.withDuplicate.value) {
     optionsArr.push({ label: 'Duplicate', key: 'duplicate' });
   }
-  if (props.withRender) {
+  if (propsRef.withRender.value) {
     optionsArr.push({ label: 'Render', key: 'render' });
   }
   optionsArr.push({ label: 'Delete', key: 'delete' });
@@ -113,25 +120,27 @@ const onClickOutside = () => {
 
 const handleSelect = (key) => {
   if (key === 'change') {
-    emit('on-edit', props.id);
+    emit('on-edit', propsRef.id.value);
   }
   if (key === 'delete') {
-    emit('on-delete', props.id);
+    emit('on-delete', propsRef.id.value);
   }
   if (key === 'export') {
-    emit('on-export', props.id);
+    emit('on-export', propsRef.id.value);
   }
   if (key === 'duplicate') {
-    emit('on-duplicate', props.id);
+    emit('on-duplicate', propsRef.id.value);
   }
   if (key === 'render') {
-    emit('on-render', props.id);
+    emit('on-render', propsRef.id.value);
   }
   showDropdownRef.value = false;
 };
 
 const onCardClick = () => {
-  emit('cardClick', props.id);
+  if (props.clickable) {
+    emit('card-click', propsRef.id.value);
+  }
 };
 </script>
 

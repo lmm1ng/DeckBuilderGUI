@@ -5,7 +5,7 @@
         <n-form>
           <n-form-item label="Sort by:">
             <n-select
-              :value="store.getters.getSortValue"
+              :value="mainStore.sort"
               :options="drawerOptions"
               :on-update:value="onSortingSelect"
             />
@@ -41,7 +41,6 @@
       </n-drawer-content>
     </n-drawer>
     <span class="page-header__path">
-
       <n-breadcrumb class="breadcrumb-path">
         <n-breadcrumb-item
           @click="onBreadcrumbItemClick(0)"
@@ -49,7 +48,7 @@
           DeckBuilder
         </n-breadcrumb-item>
         <n-breadcrumb-item
-          v-for="(path, idx) in store.getters.getBreadcrumbPathItems"
+          v-for="(path, idx) in mainStore.breadcrumbPathItems"
           :key="idx + 1"
           @click="onBreadcrumbItemClick(idx + 1)"
         >
@@ -95,16 +94,12 @@ import { AddFilled, NoteAddOutlined, SearchOutlined } from '@vicons/material';
 import { Icon } from '@vicons/utils';
 import { defineProps, ref, defineEmits } from 'vue';
 import { useRouter } from 'vue-router';
-import { useStore } from 'vuex';
+import { useStore } from '@/stores/main';
 
-const store = useStore();
+const mainStore = useStore();
 const router = useRouter();
 
 const props = defineProps({
-  title: {
-    type: String,
-    default: '',
-  },
   showButtons: {
     type: Boolean,
     default: false,
@@ -143,12 +138,12 @@ const drawerOptions = [
 ];
 
 const onSortingSelect = (val) => {
-  store.commit('setSortValue', val);
+  mainStore.setSort(val);
   emit('on-sort');
 };
 
 const onBreadcrumbItemClick = (idx) => {
-  router.push(`/${store.getters.getFullPathItems.slice(0, idx * 2).join('/')}`);
+  router.push(`/${mainStore.pathItems.slice(0, idx * 2).join('/')}`);
 };
 </script>
 

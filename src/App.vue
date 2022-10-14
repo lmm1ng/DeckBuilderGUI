@@ -1,6 +1,6 @@
 <template>
-  <router-view/>
-  <span class="version">{{ store.getters.getVersion }}</span>
+  <router-view :key="router.path"/>
+  <span class="version">{{ systemStore.version }}</span>
 </template>
 
 <style lang="scss">
@@ -14,12 +14,14 @@ body, #app {
 <script setup>
 import api from '@/api';
 import { onMounted } from 'vue';
-import { useStore } from 'vuex';
+import { useRoute } from 'vue-router';
+import { useSystemStore } from '@/stores/system';
 
-const store = useStore();
+const systemStore = useSystemStore();
+const router = useRoute();
 
 onMounted(() => {
-  store.dispatch('fetchVersion');
+  systemStore.fetchVersion();
 });
 
 window.onbeforeunload = function () {

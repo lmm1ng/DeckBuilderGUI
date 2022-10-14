@@ -1,21 +1,21 @@
 export default {
-  getCards(requestData) {
+  list(requestData) {
     return fetch(`/api/games/${requestData.gameId}/collections/${requestData.collectionId}/decks/${requestData.deckId}/cards?${new URLSearchParams(requestData.config)}`)
       .then((response) => response.json());
   },
-  getCard(requestData) {
+  read(requestData) {
     return fetch(`/api/games/${requestData.gameId}/collections/${requestData.collectionId}/decks/${requestData.deckId}/cards/${requestData.cardId}`)
       .then((response) => response.json());
   },
-  createCard(requestData) {
+  create(requestData) {
     return fetch(`/api/games/${requestData.gameId}/collections/${requestData.collectionId}/decks/${requestData.deckId}/cards`, { method: 'POST', body: JSON.stringify(requestData.body) })
       .then((response) => response.json());
   },
-  editCard(requestData) {
+  update(requestData) {
     return fetch(`/api/games/${requestData.gameId}/collections/${requestData.collectionId}/decks/${requestData.deckId}/cards/${requestData.cardId}`, { method: 'PATCH', body: JSON.stringify(requestData.body) })
       .then((response) => response.json());
   },
-  deleteCard(requestData) {
+  delete(requestData) {
     return fetch(`/api/games/${requestData.gameId}/collections/${requestData.collectionId}/decks/${requestData.deckId}/cards/${requestData.cardId}`, { method: 'DELETE' });
   },
 };
