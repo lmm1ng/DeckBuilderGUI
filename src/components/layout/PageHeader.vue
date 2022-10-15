@@ -63,7 +63,7 @@
             <AddFilled />
           </Icon>
         </template>
-        <span>{{createTooltipText}}</span>
+        <span>Create</span>
       </n-tooltip>
       <n-tooltip v-if="props.withImport" trigger="hover" :delay="300">
         <template #trigger>
@@ -75,7 +75,7 @@
             <NoteAddOutlined />
           </Icon>
         </template>
-        <span>Import game</span>
+        <span>Import</span>
       </n-tooltip>
       <n-tooltip trigger="hover" :delay="300">
         <template #trigger>
@@ -107,10 +107,6 @@ const props = defineProps({
   withImport: {
     type: Boolean,
     default: false,
-  },
-  createTooltipText: {
-    type: String,
-    default: '',
   },
 });
 

@@ -19,7 +19,6 @@
     />
     <page-header
       show-buttons
-      createTooltipText="Create game"
       @on-add="openAddModal"
       @on-import="isImportModal = true"
       @on-sort="onSort"
