@@ -1,6 +1,8 @@
 <template>
-  <router-view/>
-  <span class="version">{{ store.getters.getVersion }}</span>
+  <n-dialog-provider>
+    <router-view :key="router.path"/>
+  </n-dialog-provider>
+  <span class="version">{{ systemStore.version }}</span>
 </template>
 
 <style lang="scss">
@@ -14,12 +16,14 @@ body, #app {
 <script setup>
 import api from '@/api';
 import { onMounted } from 'vue';
-import { useStore } from 'vuex';
+import { useRoute } from 'vue-router';
+import { useSystemStore } from '@/stores/system';
 
-const store = useStore();
+const systemStore = useSystemStore();
+const router = useRoute();
 
 onMounted(() => {
-  store.dispatch('fetchVersion');
+  systemStore.fetchVersion();
 });
 
 window.onbeforeunload = function () {
@@ -33,17 +37,9 @@ window.onbeforeunload = function () {
 .version {
   position: absolute;
   bottom: 10px;
-  right: 10px;
+  right: 25px;
   color: grey;
-}
-
-.empty-filler {
-  position: absolute;
-  top: calc(50% + 28px);
-  left: 50%;
-  transform: translate(-50%, -50%);
-  font-size: 2rem;
-  color: grey;
+  user-select: none;
 }
 
 // card transition

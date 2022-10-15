@@ -1,7 +1,8 @@
-import store from '@/store';
+import { useStore } from '@/stores/main';
 
 // eslint-disable-next-line import/prefer-default-export
 export const setBar = (to, from, next) => {
-  store.dispatch('fetchPathItems', to.path);
+  const mainStore = useStore();
+  mainStore.fetchPathItems(to.path);
   next();
 };

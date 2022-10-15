@@ -1,21 +1,21 @@
 export default {
-  getCollections(requestData) {
+  list(requestData) {
     return fetch(`/api/games/${requestData.gameId}/collections?${new URLSearchParams(requestData.config)}`)
       .then((response) => response.json());
   },
-  getCollection(requestData) {
+  read(requestData) {
     return fetch(`/api/games/${requestData.gameId}/collections/${requestData.collectionId}`)
       .then((response) => response.json());
   },
-  createCollection(requestData) {
+  create(requestData) {
     return fetch(`/api/games/${requestData.gameId}/collections`, { method: 'POST', body: JSON.stringify(requestData.body) })
       .then((response) => response.json());
   },
-  editCollection(requestData) {
+  update(requestData) {
     return fetch(`/api/games/${requestData.gameId}/collections/${requestData.collectionId}`, { method: 'PATCH', body: JSON.stringify(requestData.body) })
       .then((response) => response.json());
   },
-  deleteCollection(requestData) {
+  delete(requestData) {
     return fetch(`/api/games/${requestData.gameId}/collections/${requestData.collectionId}`, { method: 'DELETE' });
   },
 };
