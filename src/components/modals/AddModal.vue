@@ -7,7 +7,11 @@
     <div class="add-modal">
       <div class="add-modal__inputs">
         <n-input placeholder="Title" v-model:value="form.name"/>
-        <n-input placeholder="Image link" v-model:value="form.image"/>
+        <n-input
+          placeholder="Image link"
+          v-model:value="form.image"
+          @input="previewCacheStub = ''"
+        />
         <n-input-number
           v-if="props.count"
           placeholder="Count"
@@ -31,7 +35,7 @@
         <img
           v-if="form.image"
           class="card-preview"
-          :src="form.image"
+          :src="previewCacheStub || form.image"
           alt="preview"
         />
         <div class="card-preview card-preview--unsetted" v-else></div>
@@ -49,6 +53,7 @@ import {
   reactive,
   watch,
   toRef,
+  ref,
 } from 'vue';
 
 const emit = defineEmits(['update:show', 'submit']);
@@ -97,12 +102,15 @@ const entityTypeRef = toRef(props, 'entityType');
 
 const mode = computed(() => (Object.keys(initialDataRef.value).length ? 'edit' : 'create'));
 
+const previewCacheStub = ref('');
+
 const title = computed(() => (
   `${mode.value[0].toUpperCase() + mode.value.slice(1)} `
   + `${entityTypeRef.value.slice(0, entityTypeRef.value.length - 1)}`
 ));
 
 watch(isModalModel, () => {
+  previewCacheStub.value = `${initialDataRef?.value?.cachedImage}?${Math.random()}`;
   form.name = initialDataRef.value?.name || '';
   form.image = initialDataRef.value?.image || '';
   form.description = initialDataRef.value?.description || '';
