@@ -21,10 +21,6 @@
           <n-text style="font-size: 16px">
             Click or drag a file to this area to upload
           </n-text>
-          <n-p depth="3" style="margin: 8px 0 0 0">
-            Strictly prohibit from uploading sensitive information. For example,
-            your bank card PIN or your credit card expiry date.
-          </n-p>
         </n-upload-dragger>
       </n-upload>
     </div>

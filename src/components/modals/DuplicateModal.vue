@@ -7,7 +7,7 @@
     <div class="duplicate-modal">
       <img
         class="game-preview"
-        :src="props.entityData.image"
+        :src="props.entityData.cachedImage"
         alt="preview"
       />
       <span class="duplicate-modal__text">{{ props.entityData.name }}</span>
