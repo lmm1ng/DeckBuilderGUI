@@ -11,7 +11,7 @@
           :default-value="defaultTab"
         >
           <n-tab-pane
-            tab="From file"
+            tab="File"
             name="file"
           >
             <n-upload
@@ -211,10 +211,33 @@ const onAdd = () => {
   border: 2px #138b44 solid;
   border-radius: 8px;
   user-select: none;
+  &:hover {
+    animation: .3s scalePreview forwards;
+    animation-delay: 300ms;
+  }
   &--unsetted {
     width: 205px;
     aspect-ratio: 0.71;
     background-color: #138b44;
+    border: 2px #138b44 solid;
+    border-radius: 8px;
+  }
+}
+
+@keyframes scalePreview {
+  from {
+    transform: scale(1);
+  }
+  to {
+    transform: scale(1.6);
+  }
+}
+
+.n-image-preview-toolbar {
+  //Remove rotate buttons
+  i:nth-child(1), i:nth-child(2) {
+    width: 100px;
+    display: none;
   }
 }
 </style>
