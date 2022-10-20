@@ -7,6 +7,7 @@ import api from '@/api';
 export const useStore = defineStore('main', () => {
   const itemType = ref('games');
   const sort = ref('name');
+  const search = ref('');
 
   const breadcrumbPathItems = ref([]);
   const pathItems = ref([]);
@@ -17,6 +18,10 @@ export const useStore = defineStore('main', () => {
 
   function setSort(val) {
     sort.value = val;
+  }
+
+  function setSearch(val) {
+    search.value = val;
   }
 
   function setPathItems(val) {
@@ -68,5 +73,7 @@ export const useStore = defineStore('main', () => {
     fetchPathItems,
     setSort,
     setPathItems,
+    search,
+    setSearch,
   };
 });

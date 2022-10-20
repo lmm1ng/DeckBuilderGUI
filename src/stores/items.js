@@ -12,7 +12,10 @@ export const useItemsStore = defineStore('items', () => {
 
   function fetchItems(requestData) {
     isItemsLoading.value = true;
-    return api[mainStore.itemType].list({ ...requestData, config: { sort: mainStore.sort } })
+    return api[mainStore.itemType].list({
+      ...requestData,
+      config: { sort: mainStore.sort, search: mainStore.search },
+    })
       .then((response) => { items.value = response.data; })
       .finally(() => { isItemsLoading.value = false; });
   }

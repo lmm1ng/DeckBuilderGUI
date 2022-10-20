@@ -7,11 +7,42 @@
     <div class="add-modal">
       <div class="add-modal__inputs">
         <n-input placeholder="Title" v-model:value="form.name"/>
-        <n-input
-          placeholder="Image link"
-          v-model:value="form.image"
-          @input="previewCacheStub = ''"
-        />
+        <n-tabs
+          :default-value="defaultTab"
+        >
+          <n-tab-pane
+            tab="From file"
+            name="file"
+          >
+            <n-upload
+              ref="uploader"
+              :on-change="onFileUpload"
+              :max="1"
+              accept=".png,.jpg,.jpeg,.gif"
+            >
+              <n-upload-dragger style="background: #E3DED6;">
+                <div style="margin-bottom: 12px">
+                  <n-icon size="48" :depth="3">
+                    <archive-outlined />
+                  </n-icon>
+                </div>
+                <n-text>
+                  Click or drag an image to this area to upload
+                </n-text>
+              </n-upload-dragger>
+            </n-upload>
+          </n-tab-pane>
+          <n-tab-pane
+            tab="Link"
+            name="link"
+          >
+            <n-input
+              placeholder="Image link"
+              v-model:value="form.image"
+              @input="previewCacheStub = ''"
+            />
+          </n-tab-pane>
+        </n-tabs>
         <n-input-number
           v-if="props.count"
           placeholder="Count"
@@ -33,7 +64,7 @@
       </div>
       <div class="add-modal__preview">
         <img
-          v-if="form.image"
+          v-if="previewCacheStub || form.image"
           class="card-preview"
           :src="previewCacheStub || form.image"
           alt="preview"
@@ -55,6 +86,7 @@ import {
   toRef,
   ref,
 } from 'vue';
+import { ArchiveOutlined } from '@vicons/material';
 
 const emit = defineEmits(['update:show', 'submit']);
 const props = defineProps({
@@ -95,12 +127,15 @@ const form = reactive({
   description: '',
   count: 1,
   variables: [],
+  imageFile: null,
 });
 
 const initialDataRef = toRef(props, 'initialData');
 const entityTypeRef = toRef(props, 'entityType');
 
 const mode = computed(() => (Object.keys(initialDataRef.value).length ? 'edit' : 'create'));
+const defaultTab = computed(() => (initialDataRef.value?.image ? 'link' : 'file'));
+const uploader = ref(null);
 
 const previewCacheStub = ref('');
 
@@ -110,7 +145,7 @@ const title = computed(() => (
 ));
 
 watch(isModalModel, () => {
-  previewCacheStub.value = `${initialDataRef?.value?.cachedImage}?${Math.random()}`;
+  previewCacheStub.value = initialDataRef?.value?.cachedImage ? `${initialDataRef?.value?.cachedImage}?${Math.random()}` : '';
   form.name = initialDataRef.value?.name || '';
   form.image = initialDataRef.value?.image || '';
   form.description = initialDataRef.value?.description || '';
@@ -118,18 +153,38 @@ watch(isModalModel, () => {
   form.variables = initialDataRef.value?.variables
     ? Object.entries(initialDataRef.value?.variables).map(([key, value]) => ({ key, value }))
     : [];
+  form.imageFile = null;
+  if (uploader.value) {
+    uploader.value.clear();
+  }
 });
+
+const onFileUpload = ({ file }) => {
+  form.imageFile = file.file;
+};
 
 const onAdd = () => {
   const variables = form.variables.reduce((acc, cur) => {
     acc[cur.key] = cur.value;
     return acc;
   }, {});
-  const preparedData = {
-    ...form,
-    variables,
-  };
-  emit('submit', { mode: mode.value, data: preparedData });
+  const formData = new FormData();
+  // eslint-disable-next-line no-restricted-syntax
+  for (const [key, value] of Object.entries(form)) {
+    if (form.imageFile && key === 'image') {
+      // eslint-disable-next-line no-continue
+      continue;
+    }
+    if (key === 'variables') {
+      if (Object.keys(variables).length) {
+        formData.append(key, JSON.stringify(variables));
+      }
+      // eslint-disable-next-line no-continue
+      continue;
+    }
+    formData.append(key, value);
+  }
+  emit('submit', { mode: mode.value, data: formData });
 };
 </script>
 

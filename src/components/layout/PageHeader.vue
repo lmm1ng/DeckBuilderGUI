@@ -3,6 +3,13 @@
     <n-drawer v-model:show="isDrawer">
       <n-drawer-content title="Filters" footer-style="flex-direction: column;">
         <n-form>
+          <n-form-item label="Search:">
+            <n-input
+              v-model:value="searchModel"
+              placeholder=""
+              @input="onSearch"
+            />
+          </n-form-item>
           <n-form-item label="Sort by:">
             <n-select
               :value="mainStore.sort"
@@ -92,7 +99,13 @@
 <script setup>
 import { AddFilled, NoteAddOutlined, SearchOutlined } from '@vicons/material';
 import { Icon } from '@vicons/utils';
-import { defineProps, ref, defineEmits } from 'vue';
+import {
+  defineProps,
+  ref,
+  defineEmits,
+  computed,
+  onBeforeUnmount,
+} from 'vue';
 import { useRouter } from 'vue-router';
 import { useStore } from '@/stores/main';
 
@@ -135,12 +148,37 @@ const drawerOptions = [
 
 const onSortingSelect = (val) => {
   mainStore.setSort(val);
-  emit('on-sort');
+  emit('on-filters');
+};
+
+let searchTimeout = null;
+
+const onSearch = (val) => {
+  mainStore.setSearch(val);
+  if (searchTimeout) {
+    clearTimeout(searchTimeout);
+  }
+  searchTimeout = setTimeout(() => {
+    emit('on-filters');
+  }, 600);
 };
 
 const onBreadcrumbItemClick = (idx) => {
   router.push(`/${mainStore.pathItems.slice(0, idx * 2).join('/')}`);
 };
+
+const searchModel = computed({
+  get() {
+    return mainStore.search;
+  },
+  set(val) {
+    mainStore.setSearch(val);
+  },
+});
+
+onBeforeUnmount(() => {
+  mainStore.setSearch('');
+});
 </script>
 
 <style lang="scss">

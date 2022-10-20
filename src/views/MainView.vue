@@ -21,7 +21,7 @@
       show-buttons
       @on-add="openAddModal"
       @on-import="isImportModal = true"
-      @on-sort="onSort"
+      @on-filters="onFilters"
       :with-import="mainStore.itemType === 'games'"
     />
     <page-content>
@@ -224,7 +224,7 @@ const onGenerate = (id) => {
   });
 };
 
-const onSort = () => {
+const onFilters = () => {
   itemsStore.fetchItems({ ...route.params });
 };
 

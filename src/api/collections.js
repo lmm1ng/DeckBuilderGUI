@@ -8,11 +8,19 @@ export default {
       .then((response) => response.json());
   },
   create(requestData) {
-    return fetch(`/api/games/${requestData.gameId}/collections`, { method: 'POST', body: JSON.stringify(requestData.body) })
+    return fetch(`/api/games/${requestData.gameId}/collections`, {
+      method: 'POST',
+      body: requestData.body,
+      headers: { ContentType: 'multipart/form-data' },
+    })
       .then((response) => response.json());
   },
   update(requestData) {
-    return fetch(`/api/games/${requestData.gameId}/collections/${requestData.collectionId}`, { method: 'PATCH', body: JSON.stringify(requestData.body) })
+    return fetch(`/api/games/${requestData.gameId}/collections/${requestData.collectionId}`, {
+      method: 'PATCH',
+      body: requestData.body,
+      headers: { ContentType: 'multipart/form-data' },
+    })
       .then((response) => response.json());
   },
   delete(requestData) {
