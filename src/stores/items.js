@@ -17,7 +17,9 @@ export const useItemsStore = defineStore('items', () => {
       ...requestData,
       config: { sort: mainStore.sort, search: mainStore.search },
     })
-      .then((response) => { items.value = response.data; })
+      .then((response) => {
+        items.value = response.data;
+      })
       .finally(() => { isItemsLoading.value = false; });
   }
 

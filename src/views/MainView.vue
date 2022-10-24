@@ -26,7 +26,7 @@
     />
     <page-content ref="contentRef">
       <transition-group name="slide-fade">
-        <div v-if="items.length" class="main__list">
+        <div v-if="items.length && !itemsStore.isItemsLoading" class="main__list">
           <card-el
             v-for="item in items"
             :id="String(item.id)"
@@ -163,7 +163,9 @@ const onAdd = ({ mode, data }) => {
     id: tempItem.value?.id,
   })
     .then(() => {
-      contentRef.value.$el.scrollTop = contentRef.value.$el.scrollHeight;
+      if (mode === 'create') {
+        contentRef.value.$el.scrollTop = contentRef.value.$el.scrollHeight;
+      }
     })
     .finally(() => {
       isAddModal.value = false;
