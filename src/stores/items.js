@@ -9,6 +9,7 @@ export const useItemsStore = defineStore('items', () => {
 
   const items = ref([]);
   const isItemsLoading = ref(false);
+  const isApiPending = ref(false);
 
   function fetchItems(requestData) {
     isItemsLoading.value = true;
@@ -47,13 +48,21 @@ export const useItemsStore = defineStore('items', () => {
   };
 
   function fetchCreateItem(requestData) {
+    isApiPending.value = true;
     return api[mainStore.itemType].create(requestData)
-      .then((response) => addItem(response.data));
+      .then((response) => addItem(response.data))
+      .finally(() => {
+        isApiPending.value = false;
+      });
   }
 
   function fetchEditItem(requestData) {
+    isApiPending.value = true;
     return api[mainStore.itemType].update(requestData)
-      .then((response) => replaceItem({ ...response.data, oldId: requestData.id }));
+      .then((response) => replaceItem({ ...response.data, oldId: requestData.id }))
+      .finally(() => {
+        isApiPending.value = false;
+      });
   }
 
   function fetchDeleteItem(requestData) {
@@ -62,7 +71,11 @@ export const useItemsStore = defineStore('items', () => {
   }
 
   function fetchImportGame(requestData) {
-    return api.games.import(requestData).then((response) => addItem(response.data));
+    isApiPending.value = true;
+    return api.games.import(requestData).then((response) => addItem(response.data))
+      .finally(() => {
+        isApiPending.value = false;
+      });
   }
 
   function fetchExportGame(requestData) {
@@ -98,5 +111,6 @@ export const useItemsStore = defineStore('items', () => {
     fetchExportGame,
     fetchDuplicateGame,
     fetchGenerateGame,
+    isApiPending,
   };
 });

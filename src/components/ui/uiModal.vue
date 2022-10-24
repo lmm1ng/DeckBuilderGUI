@@ -15,8 +15,19 @@
           <slot/>
         </div>
         <div class="modal__buttons">
-          <n-button type="error" @click="isShow = false">Cancel</n-button>
-          <n-button type="primary" @click="emit('submit')">Ok</n-button>
+          <n-button
+            type="error"
+            @click="isShow = false"
+            :disabled="itemsStore.isApiPending"
+          >Cancel
+          </n-button>
+          <n-button
+            type="primary"
+            @click="emit('submit')"
+            :loading="itemsStore.isApiPending"
+          >
+            Ok
+          </n-button>
         </div>
       </div>
     </div>
@@ -30,6 +41,7 @@ import {
   nextTick,
   computed,
 } from 'vue';
+import { useItemsStore } from '@/stores/items';
 
 const props = defineProps({
   show: {
@@ -43,6 +55,8 @@ const props = defineProps({
 });
 
 const emit = defineEmits(['update:show', 'submit']);
+
+const itemsStore = useItemsStore();
 
 const isShow = computed({
   get() {

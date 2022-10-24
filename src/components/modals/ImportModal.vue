@@ -34,6 +34,7 @@ import {
   reactive,
   ref,
   computed,
+  watch,
 } from 'vue';
 import UiModal from '@/components/ui/uiModal.vue';
 import { ArchiveOutlined } from '@vicons/material';
@@ -71,14 +72,19 @@ const onImportFile = ({ file }) => {
   form.file = file.file;
 };
 
+watch(isModalModel, (val) => {
+  if (!val) {
+    clearForm();
+    uploader.value.clear();
+  }
+});
+
 const onImport = () => {
   if (form.file) {
     const formData = new FormData();
     formData.append('name', form.name);
     formData.append('file', form.file);
     emit('submit', formData);
-    clearForm();
-    uploader.value.clear();
   }
 };
 
