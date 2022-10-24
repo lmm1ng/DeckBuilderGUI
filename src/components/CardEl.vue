@@ -19,7 +19,7 @@
       <span>{{ propsRef.description.value }}</span>
     </n-tooltip>
     <div class="label">
-      <span>{{ propsRef.name.value }}</span>
+      <span class="label__name">{{ propsRef.name.value }}</span>
       <span class="label__count">{{ cardCount }}</span>
     </div>
     <n-dropdown
@@ -170,13 +170,13 @@ const onCardClick = () => {
   }
 }
 .card {
+  width: min-content;
   &--hover:hover {
     transform: scale(1.03);
   }
   display: flex;
   flex-direction: column;
   align-items: center;
-  justify-content: center;
   z-index: 1;
 }
 </style>
