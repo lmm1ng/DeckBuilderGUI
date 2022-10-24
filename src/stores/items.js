@@ -27,7 +27,7 @@ export const useItemsStore = defineStore('items', () => {
   }
 
   const addItem = (payload) => {
-    items.value = items.value.concat([payload]);
+    items.value = items.value.concat([{ ...payload, cachedImage: `${payload.cachedImage}?${Math.random()}` }]);
   };
 
   const replaceItem = (payload) => {

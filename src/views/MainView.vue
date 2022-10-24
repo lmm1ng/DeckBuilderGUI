@@ -24,7 +24,7 @@
       @on-filters="onFilters"
       :with-import="mainStore.itemType === 'games'"
     />
-    <page-content>
+    <page-content ref="contentRef">
       <transition-group name="slide-fade">
         <div v-if="items.length" class="main__list">
           <card-el
@@ -102,6 +102,8 @@ const isItemsLoading = computed(() => itemsStore.isItemsLoading);
 
 const tempItem = ref({});
 
+const contentRef = ref(null);
+
 onMounted(() => {
   mainStore.setItemType(route.name);
   itemsStore.fetchItems({ ...route.params });
@@ -160,6 +162,9 @@ const onAdd = ({ mode, data }) => {
     [currentPathId.value]: tempItem.value?.id,
     id: tempItem.value?.id,
   })
+    .then(() => {
+      contentRef.value.$el.scrollTop = contentRef.value.$el.scrollHeight;
+    })
     .finally(() => {
       isAddModal.value = false;
     });
