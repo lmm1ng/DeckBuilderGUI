@@ -1,5 +1,5 @@
 <template>
-  <div class="main">
+  <div class="main" oncontextmenu="return false;">
     <add-modal
       v-model:show="isAddModal"
       :initial-data="tempItem"
