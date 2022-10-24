@@ -81,7 +81,7 @@ export const useItemsStore = defineStore('items', () => {
   }
 
   function fetchGenerateGame(requestData) {
-    return api.games.generate(requestData);
+    return api.games.generate({ ...requestData, body: { sortOrder: mainStore.sort } });
   }
 
   return {

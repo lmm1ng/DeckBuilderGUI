@@ -36,6 +36,6 @@ export default {
       .then((response) => response.json());
   },
   generate(requestData) {
-    return fetch(`/api/games/${requestData.gameId}/generate`);
+    return fetch(`/api/games/${requestData.gameId}/generate`, { method: 'POST', body: JSON.stringify(requestData.body) });
   },
 };

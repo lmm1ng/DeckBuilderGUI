@@ -8,7 +8,7 @@
       <div class="add-modal__inputs">
         <n-input placeholder="Title" v-model:value="form.name"/>
         <n-tabs
-          :default-value="defaultTab"
+          v-model:value="selectedTab"
         >
           <n-tab-pane
             tab="File"
@@ -39,7 +39,6 @@
             <n-input
               placeholder="Image link"
               v-model:value="form.image"
-              @input="previewCacheStub = ''"
             />
           </n-tab-pane>
         </n-tabs>
@@ -64,9 +63,9 @@
       </div>
       <div class="add-modal__preview">
         <img
-          v-if="previewCacheStub || form.image"
+          v-if="previewImage"
           class="card-preview"
-          :src="previewCacheStub || form.image"
+          :src="previewImage"
           alt="preview"
         />
         <div class="card-preview card-preview--unsetted" v-else></div>
@@ -134,18 +133,40 @@ const initialDataRef = toRef(props, 'initialData');
 const entityTypeRef = toRef(props, 'entityType');
 
 const mode = computed(() => (Object.keys(initialDataRef.value).length ? 'edit' : 'create'));
-const defaultTab = computed(() => (initialDataRef.value?.image ? 'link' : 'file'));
 const uploader = ref(null);
 
-const previewCacheStub = ref('');
+const clearFile = () => {
+  form.imageFile = null;
+  if (uploader.value) {
+    uploader.value.clear();
+  }
+};
+
+const selectedTab = ref('');
+
+watch(selectedTab, () => {
+  clearFile();
+});
+
+const previewImage = computed(() => {
+  if (form.imageFile) {
+    return URL.createObjectURL(form.imageFile);
+  }
+  if (form.image === initialDataRef?.value?.image) {
+    return initialDataRef?.value?.cachedImage;
+  }
+  return form.image;
+});
 
 const title = computed(() => (
   `${mode.value[0].toUpperCase() + mode.value.slice(1)} `
   + `${entityTypeRef.value.slice(0, entityTypeRef.value.length - 1)}`
 ));
 
-watch(isModalModel, () => {
-  previewCacheStub.value = initialDataRef?.value?.cachedImage ? `${initialDataRef?.value?.cachedImage}?${Math.random()}` : '';
+watch(isModalModel, (val) => {
+  if (val) {
+    selectedTab.value = initialDataRef.value?.image ? 'link' : 'file';
+  }
   form.name = initialDataRef.value?.name || '';
   form.image = initialDataRef.value?.image || '';
   form.description = initialDataRef.value?.description || '';
@@ -153,13 +174,14 @@ watch(isModalModel, () => {
   form.variables = initialDataRef.value?.variables
     ? Object.entries(initialDataRef.value?.variables).map(([key, value]) => ({ key, value }))
     : [];
-  form.imageFile = null;
-  if (uploader.value) {
-    uploader.value.clear();
-  }
+  clearFile();
 });
 
 const onFileUpload = ({ file }) => {
+  if (file?.status === 'removed') {
+    form.imageFile = null;
+    return;
+  }
   form.imageFile = file.file;
 };
 
