@@ -1,35 +1,36 @@
 <template>
   <n-dialog-provider>
-    <router-view :key="router.path"/>
+    <router-view :key="router.path" />
   </n-dialog-provider>
   <span class="version">{{ systemStore.version }}</span>
 </template>
 
+<script setup>
+import api from '@/api'
+import { onMounted } from 'vue'
+import { useRoute } from 'vue-router'
+import { useSystemStore } from '@/stores/system'
+
+const systemStore = useSystemStore()
+const router = useRoute()
+
+onMounted(() => {
+  systemStore.fetchVersion()
+})
+
+window.onbeforeunload = function () {
+  api.system.quit()
+}
+</script>
+
 <style lang="scss">
-body, #app {
+body,
+#app {
   height: 100vh;
   margin: 0;
   overflow: hidden;
 }
 </style>
-
-<script setup>
-import api from '@/api';
-import { onMounted } from 'vue';
-import { useRoute } from 'vue-router';
-import { useSystemStore } from '@/stores/system';
-
-const systemStore = useSystemStore();
-const router = useRoute();
-
-onMounted(() => {
-  systemStore.fetchVersion();
-});
-
-window.onbeforeunload = function () {
-  api.system.quit();
-};
-</script>
 <style lang="scss">
 .app {
   position: relative;

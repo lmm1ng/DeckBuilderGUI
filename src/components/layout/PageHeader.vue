@@ -1,7 +1,10 @@
 <template>
   <div class="page-header">
     <n-drawer v-model:show="isDrawer">
-      <n-drawer-content title="Filters" footer-style="flex-direction: column;">
+      <n-drawer-content
+        title="Filters"
+        footer-style="flex-direction: column;"
+      >
         <n-form>
           <n-form-item label="Search:">
             <n-input
@@ -49,11 +52,7 @@
     </n-drawer>
     <span class="page-header__path">
       <n-breadcrumb class="breadcrumb-path">
-        <n-breadcrumb-item
-          @click="onBreadcrumbItemClick(0)"
-        >
-          DeckBuilder
-        </n-breadcrumb-item>
+        <n-breadcrumb-item @click="onBreadcrumbItemClick(0)">DeckBuilder</n-breadcrumb-item>
         <n-breadcrumb-item
           v-for="(path, idx) in mainStore.breadcrumbPathItems"
           :key="idx + 1"
@@ -63,16 +62,30 @@
         </n-breadcrumb-item>
       </n-breadcrumb>
     </span>
-    <div class="page-header__buttons" v-if="props.showButtons">
-      <n-tooltip trigger="hover" :delay="300">
+    <div
+      v-if="props.showButtons"
+      class="page-header__buttons"
+    >
+      <n-tooltip
+        trigger="hover"
+        :delay="300"
+      >
         <template #trigger>
-          <Icon class="icon header__button" size="24" @click="emit('on-add')">
+          <Icon
+            class="icon header__button"
+            size="24"
+            @click="emit('on-add')"
+          >
             <AddFilled />
           </Icon>
         </template>
         <span>Create</span>
       </n-tooltip>
-      <n-tooltip v-if="props.withImport" trigger="hover" :delay="300">
+      <n-tooltip
+        v-if="props.withImport"
+        trigger="hover"
+        :delay="300"
+      >
         <template #trigger>
           <Icon
             class="icon header__button"
@@ -84,9 +97,16 @@
         </template>
         <span>Import</span>
       </n-tooltip>
-      <n-tooltip trigger="hover" :delay="300">
+      <n-tooltip
+        trigger="hover"
+        :delay="300"
+      >
         <template #trigger>
-          <Icon class="icon header__button" size="24" @click="isDrawer = true">
+          <Icon
+            class="icon header__button"
+            size="24"
+            @click="isDrawer = true"
+          >
             <SearchOutlined />
           </Icon>
         </template>
@@ -97,20 +117,14 @@
 </template>
 
 <script setup>
-import { AddFilled, NoteAddOutlined, SearchOutlined } from '@vicons/material';
-import { Icon } from '@vicons/utils';
-import {
-  defineProps,
-  ref,
-  defineEmits,
-  computed,
-  onBeforeUnmount,
-} from 'vue';
-import { useRouter } from 'vue-router';
-import { useStore } from '@/stores/main';
+import { AddFilled, NoteAddOutlined, SearchOutlined } from '@vicons/material'
+import { Icon } from '@vicons/utils'
+import { defineProps, ref, defineEmits, computed, onBeforeUnmount } from 'vue'
+import { useRouter } from 'vue-router'
+import { useStore } from '@/stores/main'
 
-const mainStore = useStore();
-const router = useRouter();
+const mainStore = useStore()
+const router = useRouter()
 
 const props = defineProps({
   showButtons: {
@@ -121,11 +135,11 @@ const props = defineProps({
     type: Boolean,
     default: false,
   },
-});
+})
 
-const emit = defineEmits(['on-add', 'on-import', 'on-sort']);
+const emit = defineEmits(['on-add', 'on-import', 'on-sort', 'on-filters'])
 
-const isDrawer = ref(false);
+const isDrawer = ref(false)
 
 const drawerOptions = [
   {
@@ -144,41 +158,41 @@ const drawerOptions = [
     label: 'Date added (newest)',
     value: 'created_desc',
   },
-];
+]
 
-const onSortingSelect = (val) => {
-  mainStore.setSort(val);
-  emit('on-filters');
-};
+const onSortingSelect = val => {
+  mainStore.setSort(val)
+  emit('on-filters')
+}
 
-let searchTimeout = null;
+let searchTimeout = null
 
-const onSearch = (val) => {
-  mainStore.setSearch(val);
+const onSearch = val => {
+  mainStore.setSearch(val)
   if (searchTimeout) {
-    clearTimeout(searchTimeout);
+    clearTimeout(searchTimeout)
   }
   searchTimeout = setTimeout(() => {
-    emit('on-filters');
-  }, 600);
-};
+    emit('on-filters')
+  }, 600)
+}
 
-const onBreadcrumbItemClick = (idx) => {
-  router.push(`/${mainStore.pathItems.slice(0, idx * 2).join('/')}`);
-};
+const onBreadcrumbItemClick = idx => {
+  router.push(`/${mainStore.pathItems.slice(0, idx * 2).join('/')}`)
+}
 
 const searchModel = computed({
   get() {
-    return mainStore.search;
+    return mainStore.search
   },
   set(val) {
-    mainStore.setSearch(val);
+    mainStore.setSearch(val)
   },
-});
+})
 
 onBeforeUnmount(() => {
-  mainStore.setSearch('');
-});
+  mainStore.setSearch('')
+})
 </script>
 
 <style lang="scss">
@@ -189,12 +203,14 @@ onBeforeUnmount(() => {
   background-color: #169747;
   padding: 0 16px;
   min-height: 56px;
+
   &__path {
-    font-family: "Roboto", sans-serif;
+    font-family: 'Roboto', sans-serif;
     font-size: 20px;
     color: #e3ded6;
     font-weight: bold;
   }
+
   &__buttons {
     display: flex;
     gap: 16px;
@@ -203,25 +219,32 @@ onBeforeUnmount(() => {
     list-style: none;
   }
 }
+
 .icon {
   color: #e3ded6;
 }
+
 .icon:hover {
   color: #968c7b;
 }
 
 .breadcrumb-path {
   user-select: none;
+
   &.n-breadcrumb {
     white-space: normal;
   }
+
   .n-breadcrumb-item:last-child .n-breadcrumb-item__link {
     font-weight: bold;
   }
-  .n-breadcrumb-item__link, .n-breadcrumb-item__separator {
-    color: #e3ded6!important;
+
+  .n-breadcrumb-item__link,
+  .n-breadcrumb-item__separator {
+    color: #e3ded6 !important;
   }
 }
+
 .header__button {
   cursor: pointer;
 }

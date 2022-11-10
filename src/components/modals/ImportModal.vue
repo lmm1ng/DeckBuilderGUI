@@ -5,22 +5,26 @@
     @submit="onImport"
   >
     <div class="import-modal">
-      <n-input placeholder="Title" v-model:value="form.name" />
+      <n-input
+        v-model:value="form.name"
+        placeholder="Title"
+      />
       <n-upload
         ref="uploader"
         :on-change="onImportFile"
         :max="1"
         accept=".zip"
       >
-        <n-upload-dragger style="background: #E3DED6;">
+        <n-upload-dragger style="background: #e3ded6">
           <div style="margin-bottom: 12px">
-            <n-icon size="48" :depth="3">
+            <n-icon
+              size="48"
+              :depth="3"
+            >
               <archive-outlined />
             </n-icon>
           </div>
-          <n-text style="font-size: 16px">
-            Click or drag a file to this area to upload
-          </n-text>
+          <n-text style="font-size: 16px">Click or drag a file to this area to upload</n-text>
         </n-upload-dragger>
       </n-upload>
     </div>
@@ -28,66 +32,58 @@
 </template>
 
 <script setup>
-import {
-  defineEmits,
-  defineProps,
-  reactive,
-  ref,
-  computed,
-  watch,
-} from 'vue';
-import UiModal from '@/components/ui/uiModal.vue';
-import { ArchiveOutlined } from '@vicons/material';
+import { defineEmits, defineProps, reactive, ref, computed, watch } from 'vue'
+import UiModal from '@/components/ui/uiModal.vue'
+import { ArchiveOutlined } from '@vicons/material'
 
-const emit = defineEmits(['update:show', 'submit']);
+const emit = defineEmits(['update:show', 'submit'])
 const props = defineProps({
   show: {
     type: Boolean,
     default: false,
   },
-});
+})
 
 const isModalModel = computed({
   get() {
-    return props.show;
+    return props.show
   },
   set(val) {
-    emit('update:show', val);
+    emit('update:show', val)
   },
-});
+})
 
 const form = reactive({
   file: null,
   name: '',
-});
+})
 
-const uploader = ref(null);
+const uploader = ref(null)
 
 const clearForm = () => {
-  form.file = null;
-  form.name = '';
-};
+  form.file = null
+  form.name = ''
+}
 
 const onImportFile = ({ file }) => {
-  form.file = file.file;
-};
+  form.file = file.file
+}
 
-watch(isModalModel, (val) => {
+watch(isModalModel, val => {
   if (!val) {
-    clearForm();
-    uploader.value.clear();
+    clearForm()
+    uploader.value.clear()
   }
-});
+})
 
 const onImport = () => {
   if (form.file) {
-    const formData = new FormData();
-    formData.append('name', form.name);
-    formData.append('file', form.file);
-    emit('submit', formData);
+    const formData = new FormData()
+    formData.append('name', form.name)
+    formData.append('file', form.file)
+    emit('submit', formData)
   }
-};
-
+}
 </script>
 <style lang="scss">
 .import-modal {
@@ -98,5 +94,4 @@ const onImport = () => {
   flex-direction: column;
   gap: 30px;
 }
-
 </style>

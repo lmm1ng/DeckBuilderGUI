@@ -1,41 +1,49 @@
 export default {
   list(requestData) {
-    return fetch(`/api/games?${new URLSearchParams(requestData.config)}`).then((response) => response.json());
+    return fetch(`/api/games?${new URLSearchParams(requestData.config)}`).then(response =>
+      response.json(),
+    )
   },
   read(requestData) {
-    return fetch(`/api/games/${requestData.gameId}`).then((response) => response.json());
+    return fetch(`/api/games/${requestData.gameId}`).then(response => response.json())
   },
   create(requestData) {
     return fetch('/api/games', {
       method: 'POST',
       body: requestData.body,
       headers: { ContentType: 'multipart/form-data' },
-    })
-      .then((response) => response.json());
+    }).then(response => response.json())
   },
   update(requestData) {
     return fetch(`/api/games/${requestData.gameId}`, {
       method: 'PATCH',
       body: requestData.body,
       headers: { ContentType: 'multipart/form-data' },
-    })
-      .then((response) => response.json());
+    }).then(response => response.json())
   },
   delete(requestData) {
-    return fetch(`/api/games/${requestData.gameId}`, { method: 'DELETE' });
+    return fetch(`/api/games/${requestData.gameId}`, { method: 'DELETE' })
   },
   export(requestData) {
-    return fetch(`/api/games/${requestData.gameId}/export`);
+    return fetch(`/api/games/${requestData.gameId}/export`)
   },
   import(requestData) {
-    return fetch('/api/games/import', { method: 'POST', body: requestData, headers: { ContentType: 'multipart/form-data' } })
-      .then((response) => response.json());
+    return fetch('/api/games/import', {
+      method: 'POST',
+      body: requestData,
+      headers: { ContentType: 'multipart/form-data' },
+    }).then(response => response.json())
   },
   duplicate(requestData) {
-    return fetch(`/api/games/${requestData.gameId}/duplicate`, { method: 'POST', body: JSON.stringify(requestData.body) })
-      .then((response) => response.json());
+    return fetch(`/api/games/${requestData.gameId}/duplicate`, {
+      method: 'POST',
+      body: JSON.stringify(requestData.body),
+    }).then(response => response.json())
   },
   generate(requestData) {
-    return fetch(`/api/games/${requestData.gameId}/generate`, { method: 'POST', body: JSON.stringify(requestData.body) });
+    return fetch(`/api/games/${requestData.gameId}/generate`, {
+      method: 'POST',
+      body: JSON.stringify(requestData.body),
+    })
   },
-};
+}

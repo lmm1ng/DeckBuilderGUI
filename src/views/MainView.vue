@@ -1,5 +1,8 @@
 <template>
-  <div class="main" oncontextmenu="return false;">
+  <div
+    class="main"
+    oncontextmenu="return false;"
+  >
     <add-modal
       v-model:show="isAddModal"
       :initial-data="tempItem"
@@ -19,14 +22,17 @@
     />
     <page-header
       show-buttons
+      :with-import="mainStore.itemType === 'games'"
       @on-add="openAddModal"
       @on-import="isImportModal = true"
       @on-filters="onFilters"
-      :with-import="mainStore.itemType === 'games'"
     />
     <page-content ref="contentRef">
       <transition-group name="slide-fade">
-        <div v-if="items.length && !itemsStore.isItemsLoading" class="main__list">
+        <div
+          v-if="items.length && !itemsStore.isItemsLoading"
+          class="main__list"
+        >
           <card-el
             v-for="item in items"
             :id="String(item.id)"
@@ -36,23 +42,29 @@
             :description="item.description"
             :count="item.count"
             :clickable="mainStore.itemType !== 'cards'"
-            @card-click="onItemClick"
             :with-export="mainStore.itemType === 'games'"
-            @on-export="onExport"
             :with-duplicate="mainStore.itemType === 'games'"
-            @on-duplicate="openDuplicateModal"
             :with-render="mainStore.itemType === 'games'"
+            @card-click="onItemClick"
+            @on-export="onExport"
+            @on-duplicate="openDuplicateModal"
             @on-render="onGenerate"
             @on-edit="openAddModal"
             @on-delete="onDeleteItem"
           />
         </div>
       </transition-group>
-      <div v-if="!items.length && !isItemsLoading" class="empty-filler">
+      <div
+        v-if="!items.length && !isItemsLoading"
+        class="empty-filler"
+      >
         There is no items
       </div>
     </page-content>
-    <div class="render-spinner" v-if="generateProgress">
+    <div
+      v-if="generateProgress"
+      class="render-spinner"
+    >
       <n-progress
         class="render-spinner__progress"
         type="circle"
@@ -64,98 +76,90 @@
 </template>
 
 <script setup>
-import {
-  ref,
-  computed,
-  onMounted,
-  watch,
-  onBeforeUnmount,
-} from 'vue';
-import { useItemsStore } from '@/stores/items';
-import { useStore } from '@/stores/main';
-import { useSystemStore } from '@/stores/system';
-import { useRouter, useRoute } from 'vue-router';
+import { ref, computed, onMounted, watch, onBeforeUnmount } from 'vue'
+import { useItemsStore } from '@/stores/items'
+import { useStore } from '@/stores/main'
+import { useSystemStore } from '@/stores/system'
+import { useRouter, useRoute } from 'vue-router'
 
-import PageHeader from '@/components/layout/PageHeader.vue';
-import PageContent from '@/components/layout/PageContent.vue';
-import AddModal from '@/components/modals/AddModal.vue';
-import DuplicateModal from '@/components/modals/DuplicateModal.vue';
-import ImportModal from '@/components/modals/ImportModal.vue';
-import CardEl from '@/components/CardEl.vue';
+import PageHeader from '@/components/layout/PageHeader.vue'
+import PageContent from '@/components/layout/PageContent.vue'
+import AddModal from '@/components/modals/AddModal.vue'
+import DuplicateModal from '@/components/modals/DuplicateModal.vue'
+import ImportModal from '@/components/modals/ImportModal.vue'
+import CardEl from '@/components/CardEl.vue'
+import { useDialog } from 'naive-ui'
 
-// eslint-disable-next-line import/no-extraneous-dependencies
-import { useDialog } from 'naive-ui';
+const router = useRouter()
+const route = useRoute()
 
-const router = useRouter();
-const route = useRoute();
+const itemsStore = useItemsStore()
+const mainStore = useStore()
+const systemStore = useSystemStore()
 
-const itemsStore = useItemsStore();
-const mainStore = useStore();
-const systemStore = useSystemStore();
+const isAddModal = ref(false)
+const isImportModal = ref(false)
+const isDuplicateModal = ref(false)
 
-const isAddModal = ref(false);
-const isImportModal = ref(false);
-const isDuplicateModal = ref(false);
+const items = computed(() => itemsStore.items)
+const isItemsLoading = computed(() => itemsStore.isItemsLoading)
 
-const items = computed(() => itemsStore.items);
-const isItemsLoading = computed(() => itemsStore.isItemsLoading);
+const tempItem = ref({})
 
-const tempItem = ref({});
-
-const contentRef = ref(null);
+const contentRef = ref(null)
 
 onMounted(() => {
-  mainStore.setItemType(route.name);
-  itemsStore.fetchItems({ ...route.params });
-});
+  mainStore.setItemType(route.name)
+  itemsStore.fetchItems({ ...route.params })
+})
 
-watch(isAddModal, (val) => {
+watch(isAddModal, val => {
   if (!val) {
-    tempItem.value = {};
+    tempItem.value = {}
   }
-});
+})
 
-watch(isDuplicateModal, (val) => {
+watch(isDuplicateModal, val => {
   if (!val) {
-    tempItem.value = {};
+    tempItem.value = {}
   }
-});
+})
 
 const currentPathId = computed(() => {
-  let thisId;
+  let thisId
 
   switch (mainStore.itemType) {
     case 'games':
-      thisId = 'gameId';
-      break;
+      thisId = 'gameId'
+      break
     case 'collections':
-      thisId = 'collectionId';
-      break;
+      thisId = 'collectionId'
+      break
     case 'decks':
-      thisId = 'deckId';
-      break;
+      thisId = 'deckId'
+      break
     case 'cards':
-      thisId = 'cardId';
-      break;
+      thisId = 'cardId'
+      break
     default:
-      thisId = undefined;
+      thisId = undefined
   }
-  return thisId;
-});
+  return thisId
+})
 
-const openAddModal = (id) => {
+const openAddModal = id => {
   if (id) {
-    itemsStore.fetchItem({ ...route.params, [currentPathId.value]: id }).then((response) => {
-      tempItem.value = response;
-      isAddModal.value = true;
-    });
+    itemsStore.fetchItem({ ...route.params, [currentPathId.value]: id }).then(response => {
+      tempItem.value = response
+      isAddModal.value = true
+    })
   } else {
-    isAddModal.value = true;
+    isAddModal.value = true
   }
-};
+}
 
 const onAdd = ({ mode, data }) => {
-  const action = mode === 'create' ? itemsStore.fetchCreateItem : itemsStore.fetchEditItem;
+  const action = mode === 'create' ? itemsStore.fetchCreateItem : itemsStore.fetchEditItem
   action({
     body: data,
     ...route.params,
@@ -164,86 +168,86 @@ const onAdd = ({ mode, data }) => {
   })
     .then(() => {
       if (mode === 'create') {
-        contentRef.value.$el.scrollTop = contentRef.value.$el.scrollHeight;
+        contentRef.value.$el.scrollTop = contentRef.value.$el.scrollHeight
       }
     })
     .finally(() => {
-      isAddModal.value = false;
-    });
-};
+      isAddModal.value = false
+    })
+}
 
-const openDuplicateModal = (id) => {
-  itemsStore.fetchItem({ [currentPathId.value]: id }).then((response) => {
-    tempItem.value = response;
-    isDuplicateModal.value = true;
-  });
-};
+const openDuplicateModal = id => {
+  itemsStore.fetchItem({ [currentPathId.value]: id }).then(response => {
+    tempItem.value = response
+    isDuplicateModal.value = true
+  })
+}
 
-const onDuplicate = (name) => {
-  itemsStore.fetchDuplicateGame({ [currentPathId.value]: tempItem.value.id, body: { name } })
+const onDuplicate = name => {
+  itemsStore
+    .fetchDuplicateGame({ [currentPathId.value]: tempItem.value.id, body: { name } })
     .finally(() => {
-      isDuplicateModal.value = false;
-    });
-};
+      isDuplicateModal.value = false
+    })
+}
 
-const dialog = useDialog();
-const onDeleteItem = (id) => {
+const dialog = useDialog()
+const onDeleteItem = id => {
   dialog.error({
     title: 'Delete confirmation',
     content: 'Are you sure you want to permanently delete item?',
     positiveText: 'Delete',
     negativeText: 'Cancel',
     showIcon: false,
-    onPositiveClick: () => itemsStore.fetchDeleteItem({
-      ...route.params,
-      [currentPathId.value]: id,
-      id,
-    }),
-  });
-};
+    onPositiveClick: () =>
+      itemsStore.fetchDeleteItem({
+        ...route.params,
+        [currentPathId.value]: id,
+        id,
+      }),
+  })
+}
 
-const onImport = (data) => {
+const onImport = data => {
   itemsStore.fetchImportGame(data).then(() => {
-    isImportModal.value = false;
-  });
-};
+    isImportModal.value = false
+  })
+}
 
-const onExport = (id) => {
-  itemsStore.fetchExportGame({ [currentPathId.value]: id });
-};
+const onExport = id => {
+  itemsStore.fetchExportGame({ [currentPathId.value]: id })
+}
 
-const generateInterval = ref(null);
-const generateProgress = ref(0);
+const generateInterval = ref(null)
+const generateProgress = ref(0)
 
-const onGenerate = (id) => {
+const onGenerate = id => {
   itemsStore.fetchGenerateGame({ [currentPathId.value]: id }).then(() => {
     generateInterval.value = setInterval(() => {
-      systemStore.fetchCheckStatus().then((status) => {
-        generateProgress.value = Math.floor(status.progress);
+      systemStore.fetchCheckStatus().then(status => {
+        generateProgress.value = Math.floor(status.progress)
         if (status.status !== 'in_progress') {
-          clearInterval(generateInterval.value);
+          clearInterval(generateInterval.value)
           setTimeout(() => {
-            generateProgress.value = 0;
-          }, 500);
+            generateProgress.value = 0
+          }, 500)
         }
-      });
-    }, 500);
-  });
-};
+      })
+    }, 500)
+  })
+}
 
 const onFilters = () => {
-  itemsStore.fetchItems({ ...route.params });
-};
+  itemsStore.fetchItems({ ...route.params })
+}
 
-const onItemClick = (id) => {
-  router.push(`${route.fullPath}/${mainStore.itemType}/${id}`
-    .replace('//', '/'));
-};
+const onItemClick = id => {
+  router.push(`${route.fullPath}/${mainStore.itemType}/${id}`.replace('//', '/'))
+}
 
 onBeforeUnmount(() => {
-  itemsStore.clearItems();
-});
-
+  itemsStore.clearItems()
+})
 </script>
 
 <style lang="scss">

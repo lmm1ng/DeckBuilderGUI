@@ -2,29 +2,30 @@
   <transition name="fade">
     <div
       v-if="isShow"
-      class="modal"
-      @keydown="onKeyDown"
       ref="modal"
+      class="modal"
       tabindex="0"
+      @keydown="onKeyDown"
     >
       <div class="modal__wrapper">
         <div class="modal__header">
           {{ title }}
         </div>
         <div class="modal__content">
-          <slot/>
+          <slot />
         </div>
         <div class="modal__buttons">
           <n-button
             type="error"
-            @click="isShow = false"
             :disabled="itemsStore.isApiPending"
-          >Cancel
+            @click="isShow = false"
+          >
+            Cancel
           </n-button>
           <n-button
             type="primary"
-            @click="emit('submit')"
             :loading="itemsStore.isApiPending"
+            @click="emit('submit')"
           >
             Ok
           </n-button>
@@ -35,13 +36,8 @@
 </template>
 
 <script setup>
-import {
-  ref,
-  watch,
-  nextTick,
-  computed,
-} from 'vue';
-import { useItemsStore } from '@/stores/items';
+import { ref, watch, nextTick, computed, defineProps, defineEmits } from 'vue'
+import { useItemsStore } from '@/stores/items'
 
 const props = defineProps({
   show: {
@@ -52,38 +48,38 @@ const props = defineProps({
     type: String,
     default: '',
   },
-});
+})
 
-const emit = defineEmits(['update:show', 'submit']);
+const emit = defineEmits(['update:show', 'submit'])
 
-const itemsStore = useItemsStore();
+const itemsStore = useItemsStore()
 
 const isShow = computed({
   get() {
-    return props.show;
+    return props.show
   },
   set(val) {
-    emit('update:show', val);
+    emit('update:show', val)
   },
-});
+})
 
-const modal = ref(null);
+const modal = ref(null)
 
-watch(isShow, (val) => {
+watch(isShow, val => {
   if (val) {
     nextTick(() => {
-      modal.value.focus();
-    });
+      modal.value.focus()
+    })
   }
-});
+})
 
-const onKeyDown = (e) => {
+const onKeyDown = e => {
   if (e.code === 'Escape') {
-    isShow.value = false;
+    isShow.value = false
   } else if (e.code === 'Enter' && !e.shiftKey) {
-    emit('submit');
+    emit('submit')
   }
-};
+}
 </script>
 
 <style lang="scss">
@@ -98,25 +94,29 @@ const onKeyDown = (e) => {
   left: 0;
   z-index: 2;
   background-color: #0d5f3070;
+
   &__header {
     background-color: #169747;
     height: 30px;
     padding: 5px;
-    font-family: "Roboto", sans-serif;
+    font-family: 'Roboto', sans-serif;
     font-size: 16px;
     line-height: 30px;
     color: #e3ded6;
     font-weight: bold;
   }
+
   &__content {
     flex: 1 1 0;
   }
+
   &__buttons {
     display: flex;
     justify-content: end;
     gap: 10px;
     padding: 15px;
   }
+
   &__wrapper {
     width: 90vw;
     height: 80vh;

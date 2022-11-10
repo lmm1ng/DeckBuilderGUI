@@ -12,21 +12,19 @@
       />
       <span class="duplicate-modal__text">{{ props.entityData.name }}</span>
       <span class="duplicate-modal__text">{{ props.entityData.description }}</span>
-      <n-input placeholder="Save game as..." v-model:value="saveName"/>
+      <n-input
+        v-model:value="saveName"
+        placeholder="Save game as..."
+      />
     </div>
   </ui-modal>
 </template>
 
 <script setup>
-import UiModal from '@/components/ui/uiModal.vue';
-import {
-  computed,
-  defineEmits,
-  defineProps,
-  ref,
-} from 'vue';
+import UiModal from '@/components/ui/uiModal.vue'
+import { computed, defineEmits, defineProps, ref } from 'vue'
 
-const emit = defineEmits(['update:show', 'submit']);
+const emit = defineEmits(['update:show', 'submit'])
 const props = defineProps({
   show: {
     type: Boolean,
@@ -36,23 +34,22 @@ const props = defineProps({
     type: Object,
     default: () => {},
   },
-});
+})
 
 const isModalModel = computed({
   get() {
-    return props.show;
+    return props.show
   },
   set(val) {
-    emit('update:show', val);
+    emit('update:show', val)
   },
-});
+})
 
-const saveName = ref('');
+const saveName = ref('')
 
 const onDuplicate = () => {
-  emit('submit', saveName.value);
-};
-
+  emit('submit', saveName.value)
+}
 </script>
 <style lang="scss">
 .duplicate-modal {
