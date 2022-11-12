@@ -77,7 +77,7 @@
 </template>
 
 <script setup>
-import { ref, computed, onMounted, watch, onBeforeUnmount } from 'vue'
+import { ref, computed, onMounted, watch, onBeforeUnmount, h } from 'vue'
 import { useItemsStore } from '@/stores/items'
 import { useStore } from '@/stores/main'
 import { useSystemStore } from '@/stores/system'
@@ -205,7 +205,15 @@ const dialog = useDialog()
 const onDeleteItem = id => {
   dialog.error({
     title: 'Delete confirmation',
-    content: 'Are you sure you want to permanently delete item?',
+    // content: `Are you sure you want to permanently delete ${
+    //   items.value?.find(el => el.id === id).name
+    // }?`,
+    content: () =>
+      h('span', {}, [
+        `Are you sure you want to permanently delete `,
+        h('span', { style: { fontWeight: 'bold' } }, items.value?.find(el => el.id === id).name),
+        ' ?',
+      ]),
     positiveText: 'Delete',
     negativeText: 'Cancel',
     showIcon: false,
