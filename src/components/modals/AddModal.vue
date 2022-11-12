@@ -227,29 +227,16 @@ const onAdd = () => {
   }
 }
 .card-preview {
-  max-width: 205px;
+  max-width: 330px;
   border: 2px #138b44 solid;
-  border-radius: 8px;
+  border-radius: 20px;
   user-select: none;
-  &:hover {
-    animation: 0.3s scalePreview forwards;
-    animation-delay: 300ms;
-  }
   &--unsetted {
-    width: 205px;
+    width: 330px;
     aspect-ratio: 0.71;
     background-color: #138b44;
     border: 2px #138b44 solid;
-    border-radius: 8px;
-  }
-}
-
-@keyframes scalePreview {
-  from {
-    transform: scale(1);
-  }
-  to {
-    transform: scale(1.6);
+    border-radius: 20px;
   }
 }
 
