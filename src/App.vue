@@ -2,7 +2,6 @@
   <n-dialog-provider>
     <router-view :key="router.path" />
   </n-dialog-provider>
-  <span class="version">{{ systemStore.version }}</span>
 </template>
 
 <script setup>
@@ -35,6 +34,7 @@ body,
 .app {
   position: relative;
 }
+
 .version {
   position: absolute;
   bottom: 10px;
@@ -57,5 +57,45 @@ body,
 .slide-fade-leave-to {
   transform: translateX(20px);
   opacity: 0;
+}
+
+// Scroll
+
+/* Firefox */
+* {
+  scrollbar-width: thin;
+  scrollbar-color: #169747 #e3ded6;
+}
+
+/* Chrome, Edge and Safari */
+*::-webkit-scrollbar {
+  width: 13px;
+  width: 13px;
+}
+
+*::-webkit-scrollbar-track {
+  border-radius: 0px;
+  background-color: #e3ded6;
+}
+
+*::-webkit-scrollbar-track:hover {
+  background-color: #e3ded6;
+}
+
+*::-webkit-scrollbar-track:active {
+  background-color: #e3ded6;
+}
+
+*::-webkit-scrollbar-thumb {
+  border-radius: 12px;
+  background-color: #169747;
+}
+
+*::-webkit-scrollbar-thumb:hover {
+  background-color: #169747;
+}
+
+*::-webkit-scrollbar-thumb:active {
+  background-color: #138b44;
 }
 </style>

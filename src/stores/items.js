@@ -7,6 +7,7 @@ export const useItemsStore = defineStore('items', () => {
   const mainStore = useStore()
 
   const items = ref([])
+  const itemsMeta = ref({})
   const isItemsLoading = ref(false)
   const isApiPending = ref(false)
 
@@ -19,6 +20,7 @@ export const useItemsStore = defineStore('items', () => {
       })
       .then(response => {
         items.value = response.data
+        itemsMeta.value = response.meta
       })
       .finally(() => {
         isItemsLoading.value = false
@@ -33,6 +35,9 @@ export const useItemsStore = defineStore('items', () => {
     items.value = items.value.concat([
       { ...payload, cachedImage: `${payload.cachedImage}?${Math.random()}` },
     ])
+    if (itemsMeta.value?.total) {
+      itemsMeta.value.total += 1
+    }
   }
 
   const replaceItem = payload => {
@@ -46,10 +51,14 @@ export const useItemsStore = defineStore('items', () => {
 
   function clearItems() {
     items.value = []
+    itemsMeta.value = {}
   }
 
   const deleteItem = payload => {
     items.value = items.value.filter(el => String(el.id) !== payload.id)
+    if (itemsMeta.value?.total) {
+      itemsMeta.value.total -= 1
+    }
   }
 
   function fetchCreateItem(requestData) {
@@ -107,6 +116,7 @@ export const useItemsStore = defineStore('items', () => {
 
   return {
     items,
+    itemsMeta,
     isItemsLoading,
     clearItems,
     fetchItems,

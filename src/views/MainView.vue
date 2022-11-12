@@ -61,6 +61,7 @@
         There is no items
       </div>
     </page-content>
+    <page-footer />
     <div
       v-if="generateProgress"
       class="render-spinner"
@@ -89,6 +90,7 @@ import DuplicateModal from '@/components/modals/DuplicateModal.vue'
 import ImportModal from '@/components/modals/ImportModal.vue'
 import CardEl from '@/components/CardEl.vue'
 import { useDialog } from 'naive-ui'
+import PageFooter from '@/components/layout/PageFooter'
 
 const router = useRouter()
 const route = useRoute()
@@ -149,10 +151,15 @@ const currentPathId = computed(() => {
 
 const openAddModal = id => {
   if (id) {
-    itemsStore.fetchItem({ ...route.params, [currentPathId.value]: id }).then(response => {
-      tempItem.value = response
-      isAddModal.value = true
-    })
+    itemsStore
+      .fetchItem({
+        ...route.params,
+        [currentPathId.value]: id,
+      })
+      .then(response => {
+        tempItem.value = response
+        isAddModal.value = true
+      })
   } else {
     isAddModal.value = true
   }
@@ -185,7 +192,10 @@ const openDuplicateModal = id => {
 
 const onDuplicate = name => {
   itemsStore
-    .fetchDuplicateGame({ [currentPathId.value]: tempItem.value.id, body: { name } })
+    .fetchDuplicateGame({
+      [currentPathId.value]: tempItem.value.id,
+      body: { name },
+    })
     .finally(() => {
       isDuplicateModal.value = false
     })
@@ -255,6 +265,7 @@ onBeforeUnmount(() => {
   height: 100%;
   display: flex;
   flex-direction: column;
+
   &__list {
     display: flex;
     flex-wrap: wrap;
