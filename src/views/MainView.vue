@@ -90,7 +90,7 @@ import DuplicateModal from '@/components/modals/DuplicateModal.vue'
 import ImportModal from '@/components/modals/ImportModal.vue'
 import CardEl from '@/components/CardEl.vue'
 import { useDialog } from 'naive-ui'
-import PageFooter from '@/components/layout/PageFooter'
+import PageFooter from '@/components/layout/PageFooter.vue'
 
 const router = useRouter()
 const route = useRoute()
@@ -205,9 +205,6 @@ const dialog = useDialog()
 const onDeleteItem = id => {
   dialog.error({
     title: 'Delete confirmation',
-    // content: `Are you sure you want to permanently delete ${
-    //   items.value?.find(el => el.id === id).name
-    // }?`,
     content: () =>
       h('span', {}, [
         `Are you sure you want to permanently delete `,

@@ -1,9 +1,6 @@
 /* eslint-env node */
 module.exports = {
   root: true,
-  env: {
-    node: true,
-  },
   extends: ['eslint:recommended', 'plugin:vue/vue3-recommended', 'prettier'],
   plugins: ['prettier'],
   rules: {
