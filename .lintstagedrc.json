@@ -1,3 +1,3 @@
 {
-  "*.(vue|js|cjs|mjs)": ["npm run lint", "git add"]
+  "*.(vue|js|ts|cjs|mjs)": ["npm run lint", "git add"]
 }

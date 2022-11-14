@@ -5,7 +5,7 @@
   "scripts": {
     "dev": "vite",
     "build": "vite build",
-    "lint": "eslint . --ext .vue,.js,.cjs,.mjs --fix",
+    "lint": "eslint . --ext .vue,.js,.ts,.cjs,.mjs --fix",
     "lint-staged": "lint-staged",
     "prepare": "husky install"
   },
