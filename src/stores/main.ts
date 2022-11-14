@@ -1,34 +1,37 @@
 import { defineStore } from 'pinia'
 import { ref } from 'vue'
+import { Sort } from '@/api/games'
 import api from '@/api'
 
+export type ItemType = 'games' | 'collections' | 'decks' | 'cards'
+
 export const useStore = defineStore('main', () => {
-  const itemType = ref('games')
-  const sort = ref('name')
-  const search = ref('')
+  const itemType = ref<ItemType>('games')
+  const sort = ref<Sort>('name')
+  const search = ref<string>('')
 
-  const breadcrumbPathItems = ref([])
-  const pathItems = ref([])
+  const breadcrumbPathItems = ref<string[]>([])
+  const pathItems = ref<string[]>([])
 
-  function setItemType(type) {
+  function setItemType(type: ItemType) {
     itemType.value = type
   }
 
-  function setSort(val) {
+  function setSort(val: Sort) {
     sort.value = val
   }
 
-  function setSearch(val) {
+  function setSearch(val: string) {
     search.value = val
   }
 
-  function setPathItems(val) {
+  function setPathItems(val: string[]) {
     pathItems.value = val
   }
 
-  async function fetchPathItems(path) {
+  async function fetchPathItems(path: string) {
     const prepPath = path.split('/').slice(1)
-    pathItems.value = prepPath
+    setPathItems(prepPath)
     const onlyIds = prepPath.filter((el, idx) => idx % 2 !== 0)
     breadcrumbPathItems.value = await Promise.all(
       onlyIds.map((pathEl, idx, arr) => {

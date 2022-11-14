@@ -79,7 +79,7 @@
   </ui-modal>
 </template>
 
-<script setup>
+<script setup lang="ts">
 import UiModal from '@/components/ui/uiModal.vue'
 import { computed, defineEmits, defineProps, reactive, watch, toRef, ref } from 'vue'
 import { ArchiveOutlined } from '@vicons/material'
@@ -92,7 +92,7 @@ const props = defineProps({
   },
   initialData: {
     type: Object,
-    default: () => {},
+    default: () => ({}),
   },
   entityType: {
     type: String,
@@ -170,7 +170,10 @@ watch(isModalModel, val => {
   form.description = initialDataRef.value?.description || ''
   form.count = initialDataRef.value?.count || 1
   form.variables = initialDataRef.value?.variables
-    ? Object.entries(initialDataRef.value?.variables).map(([key, value]) => ({ key, value }))
+    ? Object.entries(initialDataRef.value?.variables).map(([key, value]) => ({
+        key,
+        value,
+      }))
     : []
   clearFile()
 })
@@ -204,7 +207,10 @@ const onAdd = () => {
     }
     formData.append(key, value)
   }
-  emit('submit', { mode: mode.value, data: formData })
+  emit('submit', {
+    mode: mode.value,
+    data: formData,
+  })
 }
 </script>
 
@@ -213,6 +219,7 @@ const onAdd = () => {
   height: 100%;
   display: grid;
   grid-template-columns: 50% 50%;
+
   &__inputs {
     padding: 10px;
     display: flex;
@@ -220,17 +227,20 @@ const onAdd = () => {
     justify-content: center;
     gap: 5px;
   }
+
   &__preview {
     display: flex;
     justify-content: center;
     align-items: center;
   }
 }
+
 .card-preview {
   max-width: 330px;
   border: 2px #138b44 solid;
   border-radius: 20px;
   user-select: none;
+
   &--unsetted {
     width: 330px;
     aspect-ratio: 0.71;

@@ -1,17 +1,21 @@
+import { ICard, IEntityQuery } from './types/entities'
+import { IResponse } from './types/response'
+import { ICrudRequest } from './types/entities'
+
 export default {
-  list(requestData) {
+  list(requestData: ICrudRequest & { config: IEntityQuery }): Promise<IResponse<ICard[]>> {
     return fetch(
       `/api/games/${requestData.gameId}/collections/${requestData.collectionId}/decks/${
         requestData.deckId
-      }/cards?${new URLSearchParams(requestData.config)}`,
+      }/cards?${new URLSearchParams(requestData.config.toString())}`,
     ).then(response => response.json())
   },
-  read(requestData) {
+  read(requestData: ICrudRequest): Promise<IResponse<ICard>> {
     return fetch(
       `/api/games/${requestData.gameId}/collections/${requestData.collectionId}/decks/${requestData.deckId}/cards/${requestData.cardId}`,
     ).then(response => response.json())
   },
-  create(requestData) {
+  create(requestData: ICrudRequest & { body: FormData }): Promise<IResponse<ICard>> {
     return fetch(
       `/api/games/${requestData.gameId}/collections/${requestData.collectionId}/decks/${requestData.deckId}/cards`,
       {
@@ -21,7 +25,7 @@ export default {
       },
     ).then(response => response.json())
   },
-  update(requestData) {
+  update(requestData: ICrudRequest & { body: FormData }): Promise<IResponse<ICard>> {
     return fetch(
       `/api/games/${requestData.gameId}/collections/${requestData.collectionId}/decks/${requestData.deckId}/cards/${requestData.cardId}`,
       {
@@ -31,7 +35,7 @@ export default {
       },
     ).then(response => response.json())
   },
-  delete(requestData) {
+  delete(requestData: ICrudRequest) {
     return fetch(
       `/api/games/${requestData.gameId}/collections/${requestData.collectionId}/decks/${requestData.deckId}/cards/${requestData.cardId}`,
       { method: 'DELETE' },

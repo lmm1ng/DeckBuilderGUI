@@ -76,10 +76,10 @@
   </div>
 </template>
 
-<script setup>
+<script setup lang="ts">
 import { ref, computed, onMounted, watch, onBeforeUnmount, h } from 'vue'
 import { useItemsStore } from '@/stores/items'
-import { useStore } from '@/stores/main'
+import { ItemType, useStore } from '@/stores/main'
 import { useSystemStore } from '@/stores/system'
 import { useRouter, useRoute } from 'vue-router'
 
@@ -111,7 +111,7 @@ const tempItem = ref({})
 const contentRef = ref(null)
 
 onMounted(() => {
-  mainStore.setItemType(route.name)
+  mainStore.setItemType(route.name as ItemType)
   itemsStore.fetchItems({ ...route.params })
 })
 
@@ -143,8 +143,6 @@ const currentPathId = computed(() => {
     case 'cards':
       thisId = 'cardId'
       break
-    default:
-      thisId = undefined
   }
   return thisId
 })
@@ -208,7 +206,11 @@ const onDeleteItem = id => {
     content: () =>
       h('span', {}, [
         `Are you sure you want to permanently delete `,
-        h('span', { style: { fontWeight: 'bold' } }, items.value?.find(el => el.id === id).name),
+        h(
+          'span',
+          { style: { fontWeight: 'bold' } },
+          items.value?.find(el => String(el.id) === id)?.name,
+        ),
         ' ?',
       ]),
     positiveText: 'Delete',
@@ -230,7 +232,7 @@ const onImport = data => {
 }
 
 const onExport = id => {
-  itemsStore.fetchExportGame({ [currentPathId.value]: id })
+  itemsStore.fetchExportGame({ [currentPathId.value]: id } as { gameId: string })
 }
 
 const generateInterval = ref(null)

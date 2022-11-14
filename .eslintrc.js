@@ -1,7 +1,12 @@
 /* eslint-env node */
 module.exports = {
   root: true,
-  extends: ['eslint:recommended', 'plugin:vue/vue3-recommended', 'prettier'],
+  extends: [
+    '@vue/typescript/recommended',
+    'eslint:recommended',
+    'plugin:vue/vue3-recommended',
+    'prettier',
+  ],
   plugins: ['prettier'],
   rules: {
     'no-unused-vars': 'warn',
@@ -11,6 +16,7 @@ module.exports = {
     'vue/multi-word-component-names': 0,
     'vue/max-attributes-per-line': 'off',
     'vue/v-on-event-hyphenation': 'off',
+    '@typescript-eslint/no-empty-interface': 0,
     'prettier/prettier': ['error'],
   },
 }

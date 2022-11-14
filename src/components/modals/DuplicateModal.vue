@@ -32,7 +32,7 @@ const props = defineProps({
   },
   entityData: {
     type: Object,
-    default: () => {},
+    default: () => ({}),
   },
 })
 
