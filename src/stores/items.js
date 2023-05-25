@@ -32,9 +32,7 @@ export const useItemsStore = defineStore('items', () => {
   }
 
   const addItem = payload => {
-    items.value = items.value.concat([
-      { ...payload, cachedImage: `${payload.cachedImage}?${Math.random()}` },
-    ])
+    items.value = items.value.concat([payload])
     if (itemsMeta.value?.total) {
       itemsMeta.value.total += 1
     }
@@ -43,7 +41,7 @@ export const useItemsStore = defineStore('items', () => {
   const replaceItem = payload => {
     items.value = items.value.map(item => {
       if (item.id === payload.oldId) {
-        return { ...payload, cachedImage: `${payload.cachedImage}?${Math.random()}` }
+        return payload
       }
       return item
     })

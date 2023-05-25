@@ -150,7 +150,7 @@ const previewImage = computed(() => {
     return URL.createObjectURL(form.imageFile)
   }
   if (form.image === initialDataRef?.value?.image) {
-    return initialDataRef?.value?.cachedImage + '?' + Math.random()
+    return initialDataRef?.value?.cachedImage
   }
   return form.image
 })
