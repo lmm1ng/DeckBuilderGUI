@@ -21,4 +21,8 @@ export default defineConfig({
       '@': path.resolve(__dirname, './src'),
     },
   },
+  // for bundle
+  build: {
+    outDir: '../web/dist'
+  },
 })
