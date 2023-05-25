@@ -77,7 +77,7 @@
 </template>
 
 <script setup>
-import { ref, computed, onMounted, watch, onBeforeUnmount, h } from 'vue'
+import { ref, computed, onMounted, watch, onBeforeUnmount, h, unref } from 'vue'
 import { useItemsStore } from '@/stores/items'
 import { useStore } from '@/stores/main'
 import { useSystemStore } from '@/stores/system'
@@ -203,12 +203,13 @@ const onDuplicate = name => {
 
 const dialog = useDialog()
 const onDeleteItem = id => {
+  const deletedName = items.value?.find(el => String(el.id) === id).name
   dialog.error({
     title: 'Delete confirmation',
     content: () =>
       h('span', {}, [
         `Are you sure you want to permanently delete `,
-        h('span', { style: { fontWeight: 'bold' } }, items.value?.find(el => el.id === id).name),
+        h('span', { style: { fontWeight: 'bold' } }, deletedName),
         ' ?',
       ]),
     positiveText: 'Delete',
