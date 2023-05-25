@@ -1,6 +1,11 @@
 <template>
   <div class="page-footer">
-    <span>Total items: {{ itemsStore.itemsMeta.total }}</span>
+    <div class="page-footer__meta">
+      <span>Total items: {{ itemsStore.itemsMeta.total }}</span>
+      <span v-if="itemsStore.itemsMeta.cardsTotal">
+        <span>, cards: {{ itemsStore.itemsMeta.cardsTotal }}</span>
+      </span>
+    </div>
     <span>{{ systemStore.version }}</span>
   </div>
 </template>
