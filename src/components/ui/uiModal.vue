@@ -108,6 +108,8 @@ const onKeyDown = e => {
 
   &__content {
     flex: 1 1 0;
+    height: 100%;
+    overflow-y: auto;
   }
 
   &__buttons {

@@ -112,12 +112,28 @@
         </template>
         <span>Filters</span>
       </n-tooltip>
+      <n-tooltip
+        v-if="props.withReplace"
+        trigger="hover"
+        :delay="300"
+      >
+        <template #trigger>
+          <Icon
+            class="icon header__button"
+            size="24"
+            @click="emit('on-replace')"
+          >
+            <ChangeCircleOutlined />
+          </Icon>
+        </template>
+        <span>Replace</span>
+      </n-tooltip>
     </div>
   </div>
 </template>
 
 <script setup>
-import { AddFilled, NoteAddOutlined, SearchOutlined } from '@vicons/material'
+import { AddFilled, NoteAddOutlined, SearchOutlined, ChangeCircleOutlined } from '@vicons/material'
 import { Icon } from '@vicons/utils'
 import { defineProps, ref, defineEmits, computed, onBeforeUnmount } from 'vue'
 import { useRouter } from 'vue-router'
@@ -135,9 +151,13 @@ const props = defineProps({
     type: Boolean,
     default: false,
   },
+  withReplace: {
+    type: Boolean,
+    default: false,
+  },
 })
 
-const emit = defineEmits(['on-add', 'on-import', 'on-sort', 'on-filters'])
+const emit = defineEmits(['on-add', 'on-import', 'on-sort', 'on-filters', 'on-replace'])
 
 const isDrawer = ref(false)
 

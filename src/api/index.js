@@ -3,6 +3,7 @@ import collections from '@/api/collections'
 import decks from '@/api/decks'
 import cards from '@/api/cards'
 import system from '@/api/system'
+import replace from '@/api/replace'
 import { useToast } from 'vue-toastification'
 
 const { fetch: originalFetch } = window
@@ -22,4 +23,5 @@ export default {
   decks,
   cards,
   system,
+  replace,
 }

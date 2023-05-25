@@ -20,12 +20,18 @@
       :entity-data="tempItem"
       @submit="onDuplicate"
     />
+    <replace-modal
+      v-model:show="isReplaceModal"
+      @submit="onReplace"
+    />
     <page-header
       show-buttons
       :with-import="mainStore.itemType === 'games'"
+      :with-replace="mainStore.itemType === 'games'"
       @on-add="openAddModal"
       @on-import="isImportModal = true"
       @on-filters="onFilters"
+      @on-replace="isReplaceModal = true"
     />
     <page-content ref="contentRef">
       <transition-group name="slide-fade">
@@ -77,10 +83,11 @@
 </template>
 
 <script setup>
-import { ref, computed, onMounted, watch, onBeforeUnmount, h, unref } from 'vue'
+import { ref, computed, onMounted, watch, onBeforeUnmount, h } from 'vue'
 import { useItemsStore } from '@/stores/items'
 import { useStore } from '@/stores/main'
 import { useSystemStore } from '@/stores/system'
+import { useReplaceStore } from '@/stores/replace'
 import { useRouter, useRoute } from 'vue-router'
 
 import PageHeader from '@/components/layout/PageHeader.vue'
@@ -88,6 +95,7 @@ import PageContent from '@/components/layout/PageContent.vue'
 import AddModal from '@/components/modals/AddModal.vue'
 import DuplicateModal from '@/components/modals/DuplicateModal.vue'
 import ImportModal from '@/components/modals/ImportModal.vue'
+import ReplaceModal from '@/components/modals/ReplaceModal.vue'
 import CardEl from '@/components/CardEl.vue'
 import { useDialog } from 'naive-ui'
 import PageFooter from '@/components/layout/PageFooter.vue'
@@ -98,10 +106,12 @@ const route = useRoute()
 const itemsStore = useItemsStore()
 const mainStore = useStore()
 const systemStore = useSystemStore()
+const replaceStore = useReplaceStore()
 
 const isAddModal = ref(false)
 const isImportModal = ref(false)
 const isDuplicateModal = ref(false)
+const isReplaceModal = ref(false)
 
 const items = computed(() => itemsStore.items)
 const isItemsLoading = computed(() => itemsStore.isItemsLoading)
@@ -260,6 +270,14 @@ const onGenerate = id => {
 
 const onFilters = () => {
   itemsStore.fetchItems({ ...route.params })
+}
+
+const onReplace = data => {
+  const formData = new FormData()
+  formData.append('file', data.file)
+  const jsonBlob = new Blob([JSON.stringify({ data: data.mapping })], { type: 'application/json' })
+  formData.append('mapping', jsonBlob)
+  replaceStore.replace(formData)
 }
 
 const onItemClick = id => {
