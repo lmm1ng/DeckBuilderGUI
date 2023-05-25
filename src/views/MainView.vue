@@ -113,6 +113,7 @@ const contentRef = ref(null)
 onMounted(() => {
   mainStore.setItemType(route.name)
   itemsStore.fetchItems({ ...route.params })
+  startCheckStatusPolling()
 })
 
 watch(isAddModal, val => {
@@ -237,19 +238,23 @@ const onExport = id => {
 const generateInterval = ref(null)
 const generateProgress = ref(0)
 
+const startCheckStatusPolling = () => {
+  generateInterval.value = setInterval(() => {
+    systemStore.fetchCheckStatus().then(status => {
+      generateProgress.value = Math.floor(status.progress)
+      if (status.status !== 'in_progress') {
+        clearInterval(generateInterval.value)
+        setTimeout(() => {
+          generateProgress.value = 0
+        }, 500)
+      }
+    })
+  }, 500)
+}
+
 const onGenerate = id => {
   itemsStore.fetchGenerateGame({ [currentPathId.value]: id }).then(() => {
-    generateInterval.value = setInterval(() => {
-      systemStore.fetchCheckStatus().then(status => {
-        generateProgress.value = Math.floor(status.progress)
-        if (status.status !== 'in_progress') {
-          clearInterval(generateInterval.value)
-          setTimeout(() => {
-            generateProgress.value = 0
-          }, 500)
-        }
-      })
-    }, 500)
+    startCheckStatusPolling()
   })
 }
 
@@ -291,6 +296,7 @@ onBeforeUnmount(() => {
 }
 
 .render-spinner {
+  z-index: 999;
   position: absolute;
   top: 0;
   left: 0;
